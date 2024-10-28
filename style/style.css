@@ -1,6 +1,9 @@
 html, body {
     margin: 0;
     padding: 0;
+    background-color: #001f3f; /* Dark blue background */
+    color: #ffffff; /* White fonts */
+    font-family: 'Courier New', Courier, monospace; /* Techy and boxy font */
 }
 
 #rnbo-root {
@@ -15,6 +18,8 @@ html, body {
 
 h2, em {
     width: 100%;
+    font-family: 'Courier New', Courier, monospace; /* Techy and boxy font */
+    color: #ffffff; /* White color for headings */
 }
 
 #rnbo-root {
@@ -29,16 +34,17 @@ h2, em {
 
 #rnbo-clickable-keyboard > div {
     margin: 2px;
-    border: solid black 1px;
+    border: solid #ffffff 1px; /* White border */
     min-height: 50px;
     flex-grow: 1;
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: #001f3f; /* Matches dark blue background */
 }
 
 #rnbo-clickable-keyboard > div.clicked {
-    background: #222222;
+    background: #222222; /* Darker when clicked */
     color: #dddddd;
 }
 
@@ -63,7 +69,7 @@ h2, em {
     background-color: #4d004d; /* Lighter purple */
     position: relative;
     margin: 0; /* Remove any margin to fill screen */
-    border: 2px solid #800080;
+    border: 2px solid #800080; /* Purple border */
     overflow: hidden;
 }
 
@@ -98,4 +104,16 @@ h2, em {
         width: 100vw;
         height: 100vh;
     }
+}
+
+/* Input and form elements styling */
+input, select, textarea {
+    background-color: #001f3f; /* Dark blue */
+    color: #ffffff; /* White text */
+    border: 1px solid #ffffff; /* White border */
+    font-family: 'Courier New', Courier, monospace; /* Techy font */
+}
+
+input[type="range"] {
+    accent-color: #ffffff; /* White accent color for sliders */
 }
