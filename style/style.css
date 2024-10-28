@@ -137,8 +137,8 @@ input[type="range"] {
 
 /* Grid-specific styles */
 #grid-container {
-    width: 92vw; /* 8% smaller than the viewport width */
-    height: 92vh; /* 8% smaller than the viewport height */
+    width: 60vw; /* Reduce width to leave 20% border on each side */
+    height: 60vh; /* Reduce height to leave 20% border on each side */
     background-color: #4d004d; /* Lighter purple */
     position: relative;
     margin: auto; /* Center the grid */
@@ -146,6 +146,8 @@ input[type="range"] {
     overflow: hidden;
     touch-action: none; /* Prevent scrolling interference */
     box-sizing: border-box; /* Include the border in sizing */
+    margin-top: 20vh; /* Adjust for centering vertically */
+    margin-bottom: 20vh; /* Keep space at the bottom */
 }
 
 #finger-dot {
@@ -176,7 +178,9 @@ input[type="range"] {
 /* iPhone-specific media query */
 @media only screen and (max-width: 768px) {
     #grid-container {
-        width: 92vw;
-        height: 92vh;
+        width: 60vw;
+        height: 60vh;
+        margin-top: 20vh;
+        margin-bottom: 20vh;
     }
 }
