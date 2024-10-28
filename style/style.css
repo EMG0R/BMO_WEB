@@ -6,6 +6,24 @@ html, body {
     font-family: 'Courier New', Courier, monospace; /* Techy and boxy font */
 }
 
+#neptr-title {
+    text-align: center;
+    color: #ffffff; /* White title */
+    font-family: 'Courier New', Courier, monospace; /* Techy and boxy font */
+    margin-top: 20px; /* Space above the title */
+    font-size: 2.5em; /* Large font for the title */
+    letter-spacing: 2px; /* Add a bit of letter spacing for a modern look */
+}
+
+/* Centered instruction text */
+#start-instruction {
+    text-align: center;
+    font-family: 'Courier New', Courier, monospace; /* Techy font */
+    color: #ffffff; /* White color */
+    font-size: 0.8em; /* Slightly smaller than the title */
+    margin-bottom: 20px; /* Space below the instruction */
+}
+
 #rnbo-root {
     height: 100vh;
     width: 100vw;
