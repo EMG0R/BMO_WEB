@@ -64,13 +64,14 @@ h2, em {
 
 /* Grid-specific styles */
 #grid-container {
-    width: 100vw; /* Full width to fill iPhone screen */
-    height: 100vh; /* Full height to fill iPhone screen */
+    width: 92vw; /* 92% of the viewport width (8% smaller than the full width) */
+    height: 92vh; /* 92% of the viewport height (8% smaller than the full height) */
     background-color: #4d004d; /* Lighter purple */
     position: relative;
-    margin: 0; /* Remove any margin to fill screen */
+    margin: auto; /* Center the grid in the available space */
     border: 2px solid #800080; /* Purple border */
     overflow: hidden;
+    touch-action: none; /* Ensures touch events are properly handled */
 }
 
 #finger-dot {
