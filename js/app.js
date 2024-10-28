@@ -2,8 +2,7 @@
 
 async function setup() {
 
-    
-    // WORK OFF???
+    // Keep the screen awake
     async function keepAwake() {
         try {
             const wakeLock = await navigator.wakeLock.request('screen');
@@ -16,6 +15,7 @@ async function setup() {
     // Call keepAwake when the page loads
     keepAwake();
 
+    // Resume AudioContext when visibility changes
     document.addEventListener("visibilitychange", function() {
         if (document.visibilityState === 'visible') {
             if (context.state === 'suspended') {
@@ -25,7 +25,6 @@ async function setup() {
             }
         }
     });
-
 
     const patchExportURL = "export/patch.export.json";
 
@@ -225,6 +224,8 @@ function makeSliders(device) {
 function setupGridControl(device) {
     const gridContainer = document.getElementById('grid-container');
     const fingerDot = document.getElementById('finger-dot');
+    let isMouseOverGrid = false; // Track if mouse is over grid
+    let lastMousePosition = { x: null, y: null }; // Store last mouse position
 
     // Function to calculate X and Y from touch or mouse position
     function calculateXY(clientX, clientY) {
@@ -239,13 +240,9 @@ function setupGridControl(device) {
 
     // Function to send X and Y values to RNBO using the same method as sliders
     function updateRNBOValues(x, y) {
-        // Find the parameters by index if they are parameters 0 and 1
-        // Or adjust the code to find parameters by name or id if necessary
+        // Adjust the code to find parameters by name or id if necessary
         const paramX = device.parameters[1]; // Assuming X is parameter at index 1
         const paramY = device.parameters[0]; // Assuming Y is parameter at index 0
-
-        // Log parameter IDs and names to verify
-        // console.log("Parameters:", device.parameters);
 
         if (paramX) {
             paramX.value = x;
@@ -253,6 +250,23 @@ function setupGridControl(device) {
         if (paramY) {
             paramY.value = y;
         }
+    }
+
+    // Function to create spark trails
+    function createSpark(pageX, pageY) {
+        const spark = document.createElement("div");
+        spark.classList.add("spark");
+        spark.style.left = `${pageX}px`;
+        spark.style.top = `${pageY}px`;
+        spark.style.width = `${Math.random() * 10 + 5}px`; // Random size for sparks
+        spark.style.height = spark.style.width;
+
+        document.body.appendChild(spark);
+
+        // Remove spark after animation
+        setTimeout(() => {
+            spark.remove();
+        }, 1000); // Remove after 1 second
     }
 
     // Update coordinates and send to RNBO
@@ -277,7 +291,7 @@ function setupGridControl(device) {
         // Update RNBO with X and Y values
         updateRNBOValues(x, y);
 
-        // Update the finger dot position on the grid (using clientX/clientY for viewport)
+        // Update the finger dot position on the grid
         const rect = gridContainer.getBoundingClientRect();
         const relativeX = clientX - rect.left;
         const relativeY = clientY - rect.top;
@@ -285,8 +299,18 @@ function setupGridControl(device) {
         fingerDot.style.left = `${relativeX}px`;
         fingerDot.style.top = `${relativeY}px`;
 
-        // Create spark trail (if you have the createSpark function)
-        // createSpark(pageX, pageY);
+        // Create spark trail
+        createSpark(pageX, pageY);
+
+        // Store the last mouse position
+        lastMousePosition = { x: pageX, y: pageY };
+    }
+
+    // Function to create continuous spark trails even when mouse is still
+    function generateContinuousSparks() {
+        if (isMouseOverGrid && lastMousePosition.x !== null && lastMousePosition.y !== null) {
+            createSpark(lastMousePosition.x, lastMousePosition.y);
+        }
     }
 
     // Event listeners for touch/mouse events
@@ -295,20 +319,30 @@ function setupGridControl(device) {
 
     gridContainer.addEventListener('touchstart', (event) => {
         fingerDot.style.display = 'block';
+        isMouseOverGrid = true;
         updateCoordinates(event);
     });
 
     gridContainer.addEventListener('touchend', () => {
         fingerDot.style.display = 'none';
+        isMouseOverGrid = false;
+        lastMousePosition = { x: null, y: null };
     });
 
-    gridContainer.addEventListener('mouseenter', () => {
+    gridContainer.addEventListener('mouseenter', (event) => {
         fingerDot.style.display = 'block';
+        isMouseOverGrid = true;
+        lastMousePosition = { x: event.pageX, y: event.pageY };
     });
 
     gridContainer.addEventListener('mouseleave', () => {
         fingerDot.style.display = 'none';
+        isMouseOverGrid = false;
+        lastMousePosition = { x: null, y: null };
     });
+
+    // Generate spark trails continuously when the mouse is over the grid
+    setInterval(generateContinuousSparks, 300); // Every 300ms
 
     // Hide the finger dot initially
     fingerDot.style.display = 'none';
