@@ -1,7 +1,7 @@
 /* Smooth, seamless rainbow border for the grid container */
 #grid-container {
     width: 80vw;
-    height: 80vh;
+    height: 92vh;
     background-color: #4d004d;
     position: relative;
     margin: auto;

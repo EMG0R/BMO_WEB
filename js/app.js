@@ -240,7 +240,6 @@ function setupGridControl(device) {
 
     // Function to send X and Y values to RNBO using the same method as sliders
     function updateRNBOValues(x, y) {
-        // Adjust the code to find parameters by name or id if necessary
         const paramX = device.parameters[1]; // Assuming X is parameter at index 1
         const paramY = device.parameters[0]; // Assuming Y is parameter at index 0
 
