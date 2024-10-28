@@ -39,7 +39,7 @@ h2, em {
     font-family: 'Courier New', Courier, monospace; /* Techy and boxy font */
     margin-top: 0; /* Reset default margin */
     margin-bottom: 10px; /* Space below the title */
-    font-size: 1.6em; /* Larger font size */
+    font-size: 1.3em; /* Larger font size */
     letter-spacing: 2px; /* Spacing between letters */
     height: 100px; /* Set a height to help vertical centering */
 }
