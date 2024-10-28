@@ -1,3 +1,5 @@
+// app.js
+
 async function setup() {
     const patchExportURL = "export/patch.export.json";
 
@@ -8,30 +10,26 @@ async function setup() {
     // Create gain node and connect it to audio output
     const outputNode = context.createGain();
     outputNode.connect(context.destination);
-    
+
     // Fetch the exported patcher
     let response, patcher;
     try {
         response = await fetch(patchExportURL);
         patcher = await response.json();
-    
+
         if (!window.RNBO) {
             // Load RNBO script dynamically
-            // Note that you can skip this by knowing the RNBO version of your patch
-            // beforehand and just include it using a <script> tag
             await loadRNBOScript(patcher.desc.meta.rnboversion);
         }
 
     } catch (err) {
-        const errorContext = {
-            error: err
-        };
+        const errorContext = { error: err };
         if (response && (response.status >= 300 || response.status < 200)) {
-            errorContext.header = `Couldn't load patcher export bundle`,
+            errorContext.header = `Couldn't load patcher export bundle`;
             errorContext.description = `Check app.js to see what file it's trying to load. Currently it's` +
-            ` trying to load "${patchExportURL}". If that doesn't` + 
-            ` match the name of the file you exported from RNBO, modify` + 
-            ` patchExportURL in app.js.`;
+                ` trying to load "${patchExportURL}". If that doesn't` +
+                ` match the name of the file you exported from RNBO, modify` +
+                ` patchExportURL in app.js.`;
         }
         if (typeof guardrails === "function") {
             guardrails(errorContext);
@@ -40,16 +38,14 @@ async function setup() {
         }
         return;
     }
-    
-    // (Optional) Fetch the dependencies
+
+    // Fetch the dependencies
     let dependencies = [];
     try {
         const dependenciesResponse = await fetch("export/dependencies.json");
         dependencies = await dependenciesResponse.json();
-
-        // Prepend "export" to any file dependenciies
-        dependencies = dependencies.map(d => d.file ? Object.assign({}, d, { file: "export/" + d.file }) : d);
-    } catch (e) {}
+        dependencies = dependencies.map(d => d.file ? { ...d, file: "export/" + d.file } : d);
+    } catch (e) { }
 
     // Create the device
     let device;
@@ -64,38 +60,36 @@ async function setup() {
         return;
     }
 
-    // (Optional) Load the samples
-    if (dependencies.length)
-        await device.loadDataBufferDependencies(dependencies);
+    // Load the samples
+    if (dependencies.length) await device.loadDataBufferDependencies(dependencies);
 
     // Connect the device to the web audio graph
     device.node.connect(outputNode);
 
-    // (Optional) Extract the name and rnbo version of the patcher from the description
-    document.getElementById("patcher-title").innerText = (patcher.desc.meta.filename || "Unnamed Patcher") + " (v" + patcher.desc.meta.rnboversion + ")";
-
-    // (Optional) Automatically create sliders for the device parameters
+    // Automatically create sliders for the device parameters
     makeSliders(device);
 
-    // (Optional) Create a form to send messages to RNBO inputs
+    // Create a form to send messages to RNBO inputs
     makeInportForm(device);
 
-    // (Optional) Attach listeners to outports so you can log messages from the RNBO patcher
+    // Attach listeners to outports so you can log messages from the RNBO patcher
     attachOutports(device);
 
-    // (Optional) Load presets, if any
+    // Load presets, if any
     loadPresets(device, patcher);
 
-    // (Optional) Connect MIDI inputs
+    // Connect MIDI inputs
     makeMIDIKeyboard(device);
+
+    // Setup grid control for X and Y parameters
+    setupGridControl(device);
 
     document.body.onclick = () => {
         context.resume();
-    }
+    };
 
     // Skip if you're not using guardrails.js
-    if (typeof guardrails === "function")
-        guardrails();
+    if (typeof guardrails === "function") guardrails();
 }
 
 function loadRNBOScript(version) {
@@ -106,7 +100,7 @@ function loadRNBOScript(version) {
         const el = document.createElement("script");
         el.src = "https://c74-public.nyc3.digitaloceanspaces.com/rnbo/" + encodeURIComponent(version) + "/rnbo.min.js";
         el.onload = resolve;
-        el.onerror = function(err) {
+        el.onerror = function (err) {
             console.log(err);
             reject(new Error("Failed to load rnbo.js v" + version));
         };
@@ -124,14 +118,10 @@ function makeSliders(device) {
     let uiElements = {};
 
     device.parameters.forEach(param => {
-        // Subpatchers also have params. If we want to expose top-level
-        // params only, the best way to determine if a parameter is top level
-        // or not is to exclude parameters with a '/' in them.
-        // You can uncomment the following line if you don't want to include subpatcher params
-        
-        //if (param.id.includes("/")) return;
+        // Uncomment the following line if you want to exclude subpatcher params
+        // if (param.id.includes("/")) return;
 
-        // Create a label, an input slider and a value display
+        // Create a label, an input slider, and a value display
         let label = document.createElement("label");
         let slider = document.createElement("input");
         let text = document.createElement("input");
@@ -193,7 +183,7 @@ function makeSliders(device) {
             }
         });
 
-        // Store the slider and text by name so we can access them later
+        // Store the slider and text input for parameter update
         uiElements[param.id] = { slider, text };
 
         // Add the slider element
@@ -202,10 +192,103 @@ function makeSliders(device) {
 
     // Listen to parameter changes from the device
     device.parameterChangeEvent.subscribe(param => {
-        if (!isDraggingSlider)
+        if (!isDraggingSlider) {
             uiElements[param.id].slider.value = param.value;
+        }
         uiElements[param.id].text.value = param.value.toFixed(1);
     });
+}
+
+function setupGridControl(device) {
+    const gridContainer = document.getElementById('grid-container');
+    const fingerDot = document.getElementById('finger-dot');
+
+    // Function to calculate X and Y from touch or mouse position
+    function calculateXY(clientX, clientY) {
+        const rect = gridContainer.getBoundingClientRect();
+        const x = ((clientX - rect.left) / rect.width) * 127;
+        const y = ((clientY - rect.top) / rect.height) * 127;
+        return {
+            x: Math.min(127, Math.max(0, x)),
+            y: Math.min(127, Math.max(0, y))
+        };
+    }
+
+    // Function to send X and Y values to RNBO using the same method as sliders
+    function updateRNBOValues(x, y) {
+        // Find the parameters by index if they are parameters 0 and 1
+        // Or adjust the code to find parameters by name or id if necessary
+        const paramX = device.parameters[1]; // Assuming X is parameter at index 1
+        const paramY = device.parameters[0]; // Assuming Y is parameter at index 0
+
+        // Log parameter IDs and names to verify
+        // console.log("Parameters:", device.parameters);
+
+        if (paramX) {
+            paramX.value = x;
+        }
+        if (paramY) {
+            paramY.value = y;
+        }
+    }
+
+    // Update coordinates and send to RNBO
+    function updateCoordinates(event) {
+        event.preventDefault();
+        let clientX, clientY, pageX, pageY;
+
+        if (event.touches && event.touches.length > 0) {
+            clientX = event.touches[0].clientX;
+            clientY = event.touches[0].clientY;
+            pageX = event.touches[0].pageX;
+            pageY = event.touches[0].pageY;
+        } else {
+            clientX = event.clientX;
+            clientY = event.clientY;
+            pageX = event.pageX;
+            pageY = event.pageY;
+        }
+
+        const { x, y } = calculateXY(clientX, clientY);
+
+        // Update RNBO with X and Y values
+        updateRNBOValues(x, y);
+
+        // Update the finger dot position on the grid (using clientX/clientY for viewport)
+        const rect = gridContainer.getBoundingClientRect();
+        const relativeX = clientX - rect.left;
+        const relativeY = clientY - rect.top;
+
+        fingerDot.style.left = `${relativeX}px`;
+        fingerDot.style.top = `${relativeY}px`;
+
+        // Create spark trail (if you have the createSpark function)
+        // createSpark(pageX, pageY);
+    }
+
+    // Event listeners for touch/mouse events
+    gridContainer.addEventListener('touchmove', updateCoordinates);
+    gridContainer.addEventListener('mousemove', updateCoordinates);
+
+    gridContainer.addEventListener('touchstart', (event) => {
+        fingerDot.style.display = 'block';
+        updateCoordinates(event);
+    });
+
+    gridContainer.addEventListener('touchend', () => {
+        fingerDot.style.display = 'none';
+    });
+
+    gridContainer.addEventListener('mouseenter', () => {
+        fingerDot.style.display = 'block';
+    });
+
+    gridContainer.addEventListener('mouseleave', () => {
+        fingerDot.style.display = 'none';
+    });
+
+    // Hide the finger dot initially
+    fingerDot.style.display = 'none';
 }
 
 function makeInportForm(device) {
@@ -214,9 +297,7 @@ function makeInportForm(device) {
     const inportText = document.getElementById("inport-text");
     const inportForm = document.getElementById("inport-form");
     let inportTag = null;
-    
-    // Device messages correspond to inlets/outlets or inports/outports
-    // You can filter for one or the other using the "type" of the message
+
     const messages = device.messages;
     const inports = messages.filter(message => message.type === RNBO.MessagePortType.Inport);
 
@@ -234,16 +315,11 @@ function makeInportForm(device) {
         inportTag = inportSelect.value;
 
         inportForm.onsubmit = (ev) => {
-            // Do this or else the page will reload
             ev.preventDefault();
-
-            // Turn the text into a list of numbers (RNBO messages must be numbers, not text)
             const values = inportText.value.split(/\s+/).map(s => parseFloat(s));
-            
-            // Send the message event to the RNBO device
             let messageEvent = new RNBO.MessageEvent(RNBO.TimeNow, inportTag, values);
             device.scheduleEvent(messageEvent);
-        }
+        };
     }
 }
 
@@ -256,13 +332,8 @@ function attachOutports(device) {
 
     document.getElementById("rnbo-console").removeChild(document.getElementById("no-outports-label"));
     device.messageEvent.subscribe((ev) => {
-
-        // Ignore message events that don't belong to an outport
         if (outports.findIndex(elt => elt.tag === ev.tag) < 0) return;
-
-        // Message events have a tag as well as a payload
         console.log(`${ev.tag}: ${ev.payload}`);
-
         document.getElementById("rnbo-console-readout").innerText = `${ev.tag}: ${ev.payload}`;
     });
 }
@@ -300,30 +371,24 @@ function makeMIDIKeyboard(device) {
         key.addEventListener("pointerdown", () => {
             let midiChannel = 0;
 
-            // Format a MIDI message paylaod, this constructs a MIDI on event
             let noteOnMessage = [
                 144 + midiChannel, // Code for a note on: 10010000 & midi channel (0-15)
                 note, // MIDI Note
                 100 // MIDI Velocity
             ];
-        
+
             let noteOffMessage = [
                 128 + midiChannel, // Code for a note off: 10000000 & midi channel (0-15)
                 note, // MIDI Note
                 0 // MIDI Velocity
             ];
-        
-            // Including rnbo.min.js (or the unminified rnbo.js) will add the RNBO object
-            // to the global namespace. This includes the TimeNow constant as well as
-            // the MIDIEvent constructor.
+
             let midiPort = 0;
             let noteDurationMs = 250;
-        
-            // When scheduling an event to occur in the future, use the current audio context time
-            // multiplied by 1000 (converting seconds to milliseconds) for now.
+
             let noteOnEvent = new RNBO.MIDIEvent(device.context.currentTime * 1000, midiPort, noteOnMessage);
             let noteOffEvent = new RNBO.MIDIEvent(device.context.currentTime * 1000 + noteDurationMs, midiPort, noteOffMessage);
-        
+
             device.scheduleEvent(noteOnEvent);
             device.scheduleEvent(noteOffEvent);
 
@@ -336,4 +401,5 @@ function makeMIDIKeyboard(device) {
     });
 }
 
+// Run the setup function
 setup();
