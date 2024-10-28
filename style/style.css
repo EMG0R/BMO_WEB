@@ -39,7 +39,7 @@ h2, em {
 
 #rnbo-clickable-keyboard > div {
     margin: 2px;
-    border: solid #800080 1px; /* Purple border for the keyboard buttons */
+    border: solid #ffffff 1px; /* White border for the keyboard note buttons */
     min-height: 50px;
     flex-grow: 1;
     display: flex;
