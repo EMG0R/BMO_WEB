@@ -1,8 +1,8 @@
 /* Grid-specific styles */
 #grid-container {
-    width: 80vw; /* Adjust width to fill 80% of the viewport */
+    width: 72vw; /* Adjust width to fill 80% of the viewport */
     max-width: 540px; /* Match max-width to prevent overflow beyond parameters */
-    height: 92vh; /* Increase height by 15% */
+    height: 98vh; /* Increase height by 15% */
     background-color: #4d004d; /* Lighter purple */
     position: relative;
     margin: auto; /* Center the grid */
