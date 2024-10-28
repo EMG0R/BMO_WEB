@@ -1,6 +1,32 @@
 // app.js
 
 async function setup() {
+
+    
+    // WORK OFF???
+    async function keepAwake() {
+        try {
+            const wakeLock = await navigator.wakeLock.request('screen');
+            console.log('Wake Lock is active');
+        } catch (err) {
+            console.error(`${err.name}, ${err.message}`);
+        }
+    }
+    
+    // Call keepAwake when the page loads
+    keepAwake();
+
+    document.addEventListener("visibilitychange", function() {
+        if (document.visibilityState === 'visible') {
+            if (context.state === 'suspended') {
+                context.resume().then(() => {
+                    console.log('AudioContext resumed');
+                });
+            }
+        }
+    });
+
+
     const patchExportURL = "export/patch.export.json";
 
     // Create AudioContext
