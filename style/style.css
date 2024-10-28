@@ -1,15 +1,72 @@
+/* Smooth, seamless rainbow border for the grid container */
+#grid-container {
+    width: 80vw;
+    height: 80vh;
+    background-color: #4d004d;
+    position: relative;
+    margin: auto;
+    border: 1px solid transparent;
+    overflow: hidden;
+    touch-action: none;
+    box-sizing: border-box;
+    margin-top: 10vh;
+    margin-bottom: 10vh;
+    /* Thin animated rainbow border */
+    border: 0.5px solid;
+    border-image: conic-gradient(
+        from 0deg,
+        hsl(0, 100%, 50%),
+        hsl(60, 100%, 50%),
+        hsl(120, 100%, 50%),
+        hsl(180, 100%, 50%),
+        hsl(240, 100%, 50%),
+        hsl(300, 100%, 50%),
+        hsl(360, 100%, 50%)
+    ) 1;
+    animation: rainbow-border 1s infinite linear;
+}
+
+/* Animating the rainbow border */
+@keyframes rainbow-border {
+    0% {
+        border-image: conic-gradient(
+            from 0deg,
+            hsl(0, 100%, 50%),
+            hsl(60, 100%, 50%),
+            hsl(120, 100%, 50%),
+            hsl(180, 100%, 50%),
+            hsl(240, 100%, 50%),
+            hsl(300, 100%, 50%),
+            hsl(360, 100%, 50%)
+        ) 1;
+    }
+    100% {
+        border-image: conic-gradient(
+            from 360deg,
+            hsl(0, 100%, 50%),
+            hsl(60, 100%, 50%),
+            hsl(120, 100%, 50%),
+            hsl(180, 100%, 50%),
+            hsl(240, 100%, 50%),
+            hsl(300, 100%, 50%),
+            hsl(360, 100%, 50%)
+        ) 1;
+    }
+}
+
+/* Other styles remain the same */
 html, body {
     margin: 0;
     padding: 0;
-    background-color: #001f3f; /* Dark blue background */
-    color: #ffffff; /* White fonts */
-    font-family: 'Courier New', Courier, monospace; /* Techy and boxy font */
+    background-color: #001f3f;
+    color: #ffffff;
+    font-family: 'Courier New', Courier, monospace;
 }
 
 #rnbo-root {
     height: 100vh;
     width: 100vw;
-    box-sizing: border-box; /* Ensure padding/margins are calculated in sizing */
+    box-sizing: border-box;
 }
 
 #background {
@@ -19,149 +76,125 @@ html, body {
 
 h2, em {
     width: 100%;
-    font-family: 'Courier New', Courier, monospace; /* Techy and boxy font */
-    color: #ffffff; /* White color for headings */
-    padding-bottom: 10px; /* Space below the heading */
+    font-family: 'Courier New', Courier, monospace;
+    color: #ffffff;
+    padding-bottom: 10px;
 }
 
 #rnbo-root {
     margin: auto;
     max-width: 540px;
-    padding: 20px; /* Add space around the root */
+    padding: 20px;
 }
 
-/* Center the title horizontally and vertically */
 #neptr-title {
     display: flex;
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
-    color: #ffffff; /* White title */
-    font-family: 'Courier New', Courier, monospace; /* Techy and boxy font */
-    margin-top: 0; /* Reset default margin */
-    margin-bottom: 10px; /* Space below the title */
-    font-size: 2em; /* Larger font size */
-    letter-spacing: 2px; /* Spacing between letters */
-    height: 100px; /* Set a height to help vertical centering */
+    justify-content: center;
+    align-items: center;
+    color: #ffffff;
+    font-family: 'Courier New', Courier, monospace;
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 2em;
+    letter-spacing: 2px;
+    height: 100px;
 }
 
-/* Centered instruction text */
 #start-instruction {
     text-align: center;
-    font-family: 'Courier New', Courier, monospace; /* Techy font */
-    color: #ffffff; /* White color */
-    font-size: 0.8em; /* Smaller text for the "Presets" label */
-    margin-bottom: 5px; /* Slightly reduce space below the "Presets" label */
-    font-weight: bold; /* Make the instructions bold */
+    font-family: 'Courier New', Courier, monospace;
+    color: #ffffff;
+    font-size: 0.8em;
+    margin-bottom: 5px;
+    font-weight: bold;
 }
 
-/* Ensure rnbo root maintains spacing */
 #rnbo-clickable-keyboard {
     display: flex;
     flex-wrap: wrap;
-    padding: 10px; /* Add space inside the keyboard section */
-    margin-bottom: 20px; /* Space between keyboard and other sections */
+    padding: 10px;
+    margin-bottom: 20px;
 }
 
 #rnbo-clickable-keyboard > div {
     margin: 2px;
-    border: solid #ffffff 1px; /* White border for the keyboard note buttons */
+    border: solid #ffffff 1px;
     min-height: 50px;
     flex-grow: 1;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #001f3f; /* Matches dark blue background */
+    background-color: #001f3f;
 }
 
 #rnbo-clickable-keyboard > div.clicked {
-    background: #222222; /* Darker when clicked */
+    background: #222222;
     color: #dddddd;
 }
 
-/* Sliders section */
 #rnbo-parameter-sliders {
     display: flex;
     flex-direction: column;
-    margin-top: 20px; /* Space above the sliders */
-    padding: 10px; /* Space around sliders */
-    margin-bottom: 20px; /* Add space below the sliders */
+    margin-top: 20px;
+    padding: 10px;
+    margin-bottom: 20px;
 }
 
 #rnbo-parameter-sliders > div {
     display: flex;
-    align-items: center; /* Align slider and label vertically */
-    margin-bottom: 10px; /* Space between each slider */
+    align-items: center;
+    margin-bottom: 10px;
 }
 
 #rnbo-parameter-sliders > div > input:first-of-type {
     flex-grow: 1;
 }
 
-/* Parameter label styles */
 .param-label {
-    width: 50%; /* Increase width for parameter names */
-    font-size: 1.1em; /* Slightly larger text size for labels */
-    padding-right: 10px; /* Space between label and slider */
-    white-space: nowrap; /* Prevent text from wrapping */
-    overflow: hidden; /* Hide overflow text */
-    text-overflow: ellipsis; /* Show ellipsis for long names */
+    width: 50%;
+    font-size: 1.1em;
+    padding-right: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-/* Slider value input (number) styles */
 input[type="text"] {
-    width: 50px; /* Make the value input smaller */
-    margin-left: 10px; /* Space between slider and value */
-    text-align: right; /* Align numbers to the right */
+    width: 50px;
+    margin-left: 10px;
+    text-align: right;
 }
 
-/* Input and form elements styling */
 input, select, textarea {
-    background-color: #001f3f; /* Dark blue */
-    color: #ffffff; /* White text */
-    border: 1px solid #ffffff; /* White border for inputs */
-    font-family: 'Courier New', Courier, monospace; /* Techy font */
+    background-color: #001f3f;
+    color: #ffffff;
+    border: 1px solid #ffffff;
+    font-family: 'Courier New', Courier, monospace;
 }
 
 input[type="range"] {
-    accent-color: #ffffff; /* White accent color for sliders */
+    accent-color: #ffffff;
 }
 
-/* Presets label (Make it smaller) */
 #rnbo-presets h2 {
-    font-size: 1em; /* Smaller text for the "Presets" label */
-    margin-bottom: 5px; /* Slightly reduce space below the "Presets" label */
+    font-size: 1em;
+    margin-bottom: 5px;
 }
 
 #rnbo-presets em {
-    font-size: 0.8em; /* Smaller text for "No presets defined" message */
-}
-
-/* Grid-specific styles */
-#grid-container {
-    width: 80vw; /* Adjust width to leave 10% border on each side */
-    height: 80vh; /* Adjust height to leave 10% border on each side */
-    background-color: #4d004d; /* Lighter purple */
-    position: relative;
-    margin: auto; /* Center the grid */
-    border: 2px solid #800080; /* Only the grid has a purple border */
-    overflow: hidden;
-    touch-action: none; /* Prevent scrolling interference */
-    box-sizing: border-box; /* Include the border in sizing */
-    margin-top: 10vh; /* Adjust for centering vertically */
-    margin-bottom: 10vh; /* Keep space at the bottom */
+    font-size: 0.8em;
 }
 
 #finger-dot {
     position: absolute;
-    width: 35px; /* Slightly larger dot */
+    width: 35px;
     height: 35px;
-    background-color: #ff00ff; /* Hot pink/purple color */
+    background-color: #cb51cb;
     border-radius: 50%;
-    pointer-events: none; /* Prevent the dot from interfering with touch events */
+    pointer-events: none;
     transform: translate(-50%, -50%);
 }
 
-/* Trails Effect */
 .spark {
     position: absolute;
     background-color: #ff00ff;
@@ -176,7 +209,6 @@ input[type="range"] {
     100% { opacity: 0; }
 }
 
-/* iPhone-specific media query */
 @media only screen and (max-width: 768px) {
     #grid-container {
         width: 80vw;
