@@ -1,16 +1,18 @@
-/* Smooth, seamless rainbow border for the grid container */
+/* Grid-specific styles */
 #grid-container {
-    width: 80vw;
-    height: 92vh;
-    background-color: #4d004d;
+    width: 80vw; /* Adjust width to fill 80% of the viewport */
+    max-width: 540px; /* Match max-width to prevent overflow beyond parameters */
+    height: 92vh; /* Increase height by 15% */
+    background-color: #4d004d; /* Lighter purple */
     position: relative;
-    margin: auto;
-    border: 1px solid transparent;
+    margin: auto; /* Center the grid */
+    border: 5px solid; /* Set the size of the border */
+    animation: rainbow-border 10s infinite linear; /* Apply the rainbow animation */
     overflow: hidden;
-    touch-action: none;
-    box-sizing: border-box;
-    margin-top: 10vh;
-    margin-bottom: 10vh;
+    touch-action: none; /* Prevent scrolling interference */
+    box-sizing: border-box; /* Include the border in sizing */
+    margin-top: 10vh; /* Adjust for centering vertically */
+    margin-bottom: 10vh; /* Keep space at the bottom */
     /* Thin animated rainbow border */
     border: 0.5px solid;
     border-image: conic-gradient(
