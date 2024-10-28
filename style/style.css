@@ -49,9 +49,170 @@ h2, em {
     text-align: center;
     font-family: 'Courier New', Courier, monospace; /* Techy font */
     color: #ffffff; /* White color */
-    font-size: 0.9em; /* Slightly smaller than the title */
-    margin-bottom: 20px; /* Space below the instruction */
+    font-size: 1.1em; /* Slightly smaller than the title */
+    margin-bottom: 14px; /* Space below the instruction */
 }
+
+/* Ensure rnbo root maintains spacing */
+#rnbo-clickable-keyboard > div.clicked {
+    background: #222222; /* Darker when clicked */
+    color: #dddddd;
+}
+
+/* Sliders section */
+#rnbo-parameter-sliders {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px; /* Space above the sliders */
+    padding: 10px; /* Space around sliders */
+    margin-bottom: 20px; /* Add space below the sliders */
+}
+
+#rnbo-parameter-sliders > div {
+    display: flex;
+    align-items: center; /* Align slider and label vertically */
+    margin-bottom: 10px; /* Space between each slider */
+}
+
+#rnbo-parameter-sliders > div > input:first-of-type {
+    flex-grow: 1;
+}
+
+/* Parameter label styles */
+.param-label {
+    width: 50%; /* Increase width for parameter names */
+    font-size: 1.1em; /* Slightly larger text size for labels */
+    padding-right: 10px; /* Space between label and slider */
+    white-space: nowrap; /* Prevent text from wrapping */
+    overflow: hidden; /* Hide overflow text */
+    text-overflow: ellipsis; /* Show ellipsis for long names */
+}
+
+/* Slider value input (number) styles */
+input[type="text"] {
+    width: 50px; /* Make the value input smaller */
+    margin-left: 10px; /* Space between slider and value */
+    text-align: right; /* Align numbers to the right */
+}
+
+/* Input and form elements styling */
+input, select, textarea {
+    background-color: #001f3f; /* Dark blue */
+    color: #ffffff; /* White text */
+    border: 1px solid #ffffff; /* White border for inputs */
+    font-family: 'Courier New', Courier, monospace; /* Techy font */
+}
+
+input[type="range"] {
+    accent-color: #ffffff; /* White accent color for sliders */
+}
+
+/* Presets label (Make it smaller) */
+#rnbo-presets h2 {
+    font-size: 0.72em; /* Smaller text for the "Presets" label */
+    margin-bottom: 5px; /* Slightly reduce space below the "Presets" label */
+}
+
+#rnbo-presets em {
+    font-size: 0.8em; /* Smaller text for "No presets defined" message */
+}
+
+/* Grid-specific styles */
+#grid-container {
+    width: 60vw; /* Reduce width to leave 20% border on each side */
+    height: 60vh; /* Reduce height to leave 20% border on each side */
+    background-color: #4d004d; /* Lighter purple */
+    position: relative;
+    margin: auto; /* Center the grid */
+    border: 2px solid #800080; /* Only the grid has a purple border */
+    overflow: hidden;
+    touch-action: none; /* Prevent scrolling interference */
+    box-sizing: border-box; /* Include the border in sizing */
+    margin-top: 20vh; /* Adjust for centering vertically */
+    margin-bottom: 20vh; /* Keep space at the bottom */
+}
+
+#finger-dot {
+    position: absolute;
+    width: 26.67px; /* Size of the dot following the touch */
+    height: 26.67px;
+    background-color: #ff00ff; /* Hot pink/purple color */
+    border-radius: 50%;
+    pointer-events: none; /* Prevent the dot from interfering with touch events */
+    transform: translate(-50%, -50%);
+}
+
+/* Trails Effect */
+.spark {
+    position: absolute;
+    background-color: #ff00ff;
+    border-radius: 50%;
+    opacity: 0.8;
+    pointer-events: none;
+    animation: disappear 1s ease-out forwards;
+}
+
+@keyframes disappear {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+/* iPhone-specific media query */
+@media only screen and (max-width: 768px) {
+    #grid-container {
+        width: 60vw;
+        height: 60vh;
+        margin-top: 20vh;
+        margin-bottom: 20vh;
+    }
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    background-color: #001f3f; /* Dark blue background */
+    color: #ffffff; /* White fonts */
+    font-family: 'Courier New', Courier, monospace; /* Techy and boxy font */
+}
+
+#rnbo-root {
+    height: 100vh;
+    width: 100vw;
+    box-sizing: border-box; /* Ensure padding/margins are calculated in sizing */
+}
+
+#background {
+    position: absolute;
+    z-index: -1;
+}
+
+h2, em {
+    width: 100%;
+    font-family: 'Courier New', Courier, monospace; /* Techy and boxy font */
+    color: #ffffff; /* White color for headings */
+    padding-bottom: 10px; /* Space below the heading */
+}
+
+#rnbo-root {
+    margin: auto;
+    max-width: 540px;
+    padding: 20px; /* Add space around the root */
+}
+
+/* Center the title horizontally and vertically */
+#neptr-title {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    color: #ffffff; /* White title */
+    font-family: 'Courier New', Courier, monospace; /* Techy and boxy font */
+    margin-top: 0; /* Reset default margin */
+    margin-bottom: 10px; /* Space below the title */
+    font-size: 2.5em; /* Larger font size */
+    letter-spacing: 2px; /* Spacing between letters */
+    height: 100px; /* Set a height to help vertical centering */
+}
+
 
 /* Ensure rnbo root maintains spacing */
 #rnbo-clickable-keyboard {
@@ -127,7 +288,7 @@ input[type="range"] {
 
 /* Presets label (Make it smaller) */
 #rnbo-presets h2 {
-    font-size: 0.9em; /* Smaller text for the "Presets" label */
+    font-size: 1em; /* Smaller text for the "Presets" label */
     margin-bottom: 5px; /* Slightly reduce space below the "Presets" label */
 }
 
@@ -137,8 +298,8 @@ input[type="range"] {
 
 /* Grid-specific styles */
 #grid-container {
-    width: 60vw; /* Reduce width to leave 20% border on each side */
-    height: 60vh; /* Reduce height to leave 20% border on each side */
+    width: 80vw; /* Adjust width to leave 10% border on each side */
+    height: 80vh; /* Adjust height to leave 10% border on each side */
     background-color: #4d004d; /* Lighter purple */
     position: relative;
     margin: auto; /* Center the grid */
@@ -146,8 +307,8 @@ input[type="range"] {
     overflow: hidden;
     touch-action: none; /* Prevent scrolling interference */
     box-sizing: border-box; /* Include the border in sizing */
-    margin-top: 20vh; /* Adjust for centering vertically */
-    margin-bottom: 20vh; /* Keep space at the bottom */
+    margin-top: 10vh; /* Adjust for centering vertically */
+    margin-bottom: 10vh; /* Keep space at the bottom */
 }
 
 #finger-dot {
@@ -178,9 +339,9 @@ input[type="range"] {
 /* iPhone-specific media query */
 @media only screen and (max-width: 768px) {
     #grid-container {
-        width: 60vw;
-        height: 60vh;
-        margin-top: 20vh;
-        margin-bottom: 20vh;
+        width: 80vw;
+        height: 80vh;
+        margin-top: 10vh;
+        margin-bottom: 10vh;
     }
 }
