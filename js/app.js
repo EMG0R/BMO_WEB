@@ -69,9 +69,6 @@ async function setup() {
     // Automatically create sliders for the device parameters
     makeSliders(device);
 
-    // Create a form to send messages to RNBO inputs
-    makeInportForm(device);
-
     // Attach listeners to outports so you can log messages from the RNBO patcher
     attachOutports(device);
 
@@ -289,38 +286,6 @@ function setupGridControl(device) {
 
     // Hide the finger dot initially
     fingerDot.style.display = 'none';
-}
-
-function makeInportForm(device) {
-    const idiv = document.getElementById("rnbo-inports");
-    const inportSelect = document.getElementById("inport-select");
-    const inportText = document.getElementById("inport-text");
-    const inportForm = document.getElementById("inport-form");
-    let inportTag = null;
-
-    const messages = device.messages;
-    const inports = messages.filter(message => message.type === RNBO.MessagePortType.Inport);
-
-    if (inports.length === 0) {
-        idiv.removeChild(document.getElementById("inport-form"));
-        return;
-    } else {
-        idiv.removeChild(document.getElementById("no-inports-label"));
-        inports.forEach(inport => {
-            const option = document.createElement("option");
-            option.innerText = inport.tag;
-            inportSelect.appendChild(option);
-        });
-        inportSelect.onchange = () => inportTag = inportSelect.value;
-        inportTag = inportSelect.value;
-
-        inportForm.onsubmit = (ev) => {
-            ev.preventDefault();
-            const values = inportText.value.split(/\s+/).map(s => parseFloat(s));
-            let messageEvent = new RNBO.MessageEvent(RNBO.TimeNow, inportTag, values);
-            device.scheduleEvent(messageEvent);
-        };
-    }
 }
 
 function attachOutports(device) {
