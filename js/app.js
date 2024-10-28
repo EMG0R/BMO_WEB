@@ -2,19 +2,24 @@
 
 async function setup() {
 
-    
-    // WORK OFF???
+    // Keep screen awake
     async function keepAwake() {
         try {
-            const wakeLock = await navigator.wakeLock.request('screen');
-            console.log('Wake Lock is active');
+            if (document.visibilityState === 'visible') {
+                const wakeLock = await navigator.wakeLock.request('screen');
+                console.log('Wake Lock is active');
+            }
         } catch (err) {
             console.error(`${err.name}, ${err.message}`);
         }
     }
     
-    // Call keepAwake when the page loads
+    document.addEventListener("visibilitychange", keepAwake);
     keepAwake();
+
+    // Resume AudioContext on visibility change
+    const WAContext = window.AudioContext || window.webkitAudioContext;
+    const context = new WAContext();
 
     document.addEventListener("visibilitychange", function() {
         if (document.visibilityState === 'visible') {
@@ -26,46 +31,22 @@ async function setup() {
         }
     });
 
-
     const patchExportURL = "export/patch.export.json";
-
-    // Create AudioContext
-    const WAContext = window.AudioContext || window.webkitAudioContext;
-    const context = new WAContext();
-
-    // Create gain node and connect it to audio output
     const outputNode = context.createGain();
     outputNode.connect(context.destination);
 
-    // Fetch the exported patcher
     let response, patcher;
     try {
         response = await fetch(patchExportURL);
         patcher = await response.json();
-
         if (!window.RNBO) {
-            // Load RNBO script dynamically
             await loadRNBOScript(patcher.desc.meta.rnboversion);
         }
-
     } catch (err) {
-        const errorContext = { error: err };
-        if (response && (response.status >= 300 || response.status < 200)) {
-            errorContext.header = `Couldn't load patcher export bundle`;
-            errorContext.description = `Check app.js to see what file it's trying to load. Currently it's` +
-                ` trying to load "${patchExportURL}". If that doesn't` +
-                ` match the name of the file you exported from RNBO, modify` +
-                ` patchExportURL in app.js.`;
-        }
-        if (typeof guardrails === "function") {
-            guardrails(errorContext);
-        } else {
-            throw err;
-        }
+        handleError(err, response);
         return;
     }
 
-    // Fetch the dependencies
     let dependencies = [];
     try {
         const dependenciesResponse = await fetch("export/dependencies.json");
@@ -73,147 +54,73 @@ async function setup() {
         dependencies = dependencies.map(d => d.file ? { ...d, file: "export/" + d.file } : d);
     } catch (e) { }
 
-    // Create the device
     let device;
     try {
         device = await RNBO.createDevice({ context, patcher });
     } catch (err) {
-        if (typeof guardrails === "function") {
-            guardrails({ error: err });
-        } else {
-            throw err;
-        }
+        handleError(err);
         return;
     }
 
-    // Load the samples
     if (dependencies.length) await device.loadDataBufferDependencies(dependencies);
-
-    // Connect the device to the web audio graph
     device.node.connect(outputNode);
 
-    // Automatically create sliders for the device parameters
     makeSliders(device);
-
-    // Attach listeners to outports so you can log messages from the RNBO patcher
     attachOutports(device);
-
-    // Load presets, if any
     loadPresets(device, patcher);
-
-    // Connect MIDI inputs
     makeMIDIKeyboard(device);
-
-    // Setup grid control for X and Y parameters
     setupGridControl(device);
+    initializePianoKeyboard(device);
 
-    document.body.onclick = () => {
-        context.resume();
-    };
+    document.body.onclick = () => context.resume();
 
-    // Skip if you're not using guardrails.js
     if (typeof guardrails === "function") guardrails();
 }
 
+// Load RNBO script dynamically
 function loadRNBOScript(version) {
     return new Promise((resolve, reject) => {
         if (/^\d+\.\d+\.\d+-dev$/.test(version)) {
-            throw new Error("Patcher exported with a Debug Version!\nPlease specify the correct RNBO version to use in the code.");
+            throw new Error("Patcher exported with a Debug Version! Specify correct RNBO version.");
         }
         const el = document.createElement("script");
-        el.src = "https://c74-public.nyc3.digitaloceanspaces.com/rnbo/" + encodeURIComponent(version) + "/rnbo.min.js";
+        el.src = `https://c74-public.nyc3.digitaloceanspaces.com/rnbo/${encodeURIComponent(version)}/rnbo.min.js`;
         el.onload = resolve;
-        el.onerror = function (err) {
-            console.log(err);
-            reject(new Error("Failed to load rnbo.js v" + version));
-        };
+        el.onerror = () => reject(new Error(`Failed to load rnbo.js v${version}`));
         document.body.append(el);
     });
 }
 
+// Error handling for fetch and RNBO setup
+function handleError(err, response) {
+    const errorContext = { error: err };
+    if (response && (response.status < 200 || response.status >= 300)) {
+        errorContext.header = "Couldn't load patcher export bundle";
+        errorContext.description = `Check app.js. Currently trying to load "${patchExportURL}".`;
+    }
+    if (typeof guardrails === "function") {
+        guardrails(errorContext);
+    } else {
+        throw err;
+    }
+}
+
+// Setup sliders for RNBO parameters
 function makeSliders(device) {
     let pdiv = document.getElementById("rnbo-parameter-sliders");
     let noParamLabel = document.getElementById("no-param-label");
     if (noParamLabel && device.numParameters > 0) pdiv.removeChild(noParamLabel);
 
-    // This will allow us to ignore parameter update events while dragging the slider.
     let isDraggingSlider = false;
     let uiElements = {};
 
     device.parameters.forEach(param => {
-        // Uncomment the following line if you want to exclude subpatcher params
-        // if (param.id.includes("/")) return;
+        let sliderContainer = createSliderUI(param);
+        uiElements[param.id] = sliderContainer.uiElements;
 
-        // Create a label, an input slider, and a value display
-        let label = document.createElement("label");
-        let slider = document.createElement("input");
-        let text = document.createElement("input");
-        let sliderContainer = document.createElement("div");
-        sliderContainer.appendChild(label);
-        sliderContainer.appendChild(slider);
-        sliderContainer.appendChild(text);
-
-        // Add a name for the label
-        label.setAttribute("name", param.name);
-        label.setAttribute("for", param.name);
-        label.setAttribute("class", "param-label");
-        label.textContent = `${param.name}: `;
-
-        // Make each slider reflect its parameter
-        slider.setAttribute("type", "range");
-        slider.setAttribute("class", "param-slider");
-        slider.setAttribute("id", param.id);
-        slider.setAttribute("name", param.name);
-        slider.setAttribute("min", param.min);
-        slider.setAttribute("max", param.max);
-        if (param.steps > 1) {
-            slider.setAttribute("step", (param.max - param.min) / (param.steps - 1));
-        } else {
-            slider.setAttribute("step", (param.max - param.min) / 1000.0);
-        }
-        slider.setAttribute("value", param.value);
-
-        // Make a settable text input display for the value
-        text.setAttribute("value", param.value.toFixed(1));
-        text.setAttribute("type", "text");
-
-        // Make each slider control its parameter
-        slider.addEventListener("pointerdown", () => {
-            isDraggingSlider = true;
-        });
-        slider.addEventListener("pointerup", () => {
-            isDraggingSlider = false;
-            slider.value = param.value;
-            text.value = param.value.toFixed(1);
-        });
-        slider.addEventListener("input", () => {
-            let value = Number.parseFloat(slider.value);
-            param.value = value;
-        });
-
-        // Make the text box input control the parameter value as well
-        text.addEventListener("keydown", (ev) => {
-            if (ev.key === "Enter") {
-                let newValue = Number.parseFloat(text.value);
-                if (isNaN(newValue)) {
-                    text.value = param.value;
-                } else {
-                    newValue = Math.min(newValue, param.max);
-                    newValue = Math.max(newValue, param.min);
-                    text.value = newValue;
-                    param.value = newValue;
-                }
-            }
-        });
-
-        // Store the slider and text input for parameter update
-        uiElements[param.id] = { slider, text };
-
-        // Add the slider element
-        pdiv.appendChild(sliderContainer);
+        pdiv.appendChild(sliderContainer.element);
     });
 
-    // Listen to parameter changes from the device
     device.parameterChangeEvent.subscribe(param => {
         if (!isDraggingSlider) {
             uiElements[param.id].slider.value = param.value;
@@ -222,40 +129,122 @@ function makeSliders(device) {
     });
 }
 
+function createSliderUI(param) {
+    let label = document.createElement("label");
+    let slider = document.createElement("input");
+    let text = document.createElement("input");
+    let sliderContainer = document.createElement("div");
+
+    label.textContent = `${param.name}: `;
+    label.className = "param-label";
+    slider.type = "range";
+    slider.min = param.min;
+    slider.max = param.max;
+    slider.step = param.steps > 1 ? (param.max - param.min) / (param.steps - 1) : (param.max - param.min) / 1000;
+    slider.value = param.value;
+    text.type = "text";
+    text.value = param.value.toFixed(1);
+
+    slider.addEventListener("input", () => {
+        param.value = parseFloat(slider.value);
+        text.value = param.value.toFixed(1);
+    });
+
+    text.addEventListener("change", () => {
+        let newValue = parseFloat(text.value);
+        if (!isNaN(newValue)) {
+            newValue = Math.max(param.min, Math.min(param.max, newValue));
+            param.value = newValue;
+            slider.value = newValue;
+        }
+    });
+
+    sliderContainer.append(label, slider, text);
+
+    return {
+        element: sliderContainer,
+        uiElements: { slider, text }
+    };
+}
+
+// Initialize piano keyboard interaction
+function initializePianoKeyboard(device) {
+    document.querySelectorAll('.white-key, .black-key').forEach(key => {
+        key.addEventListener('mousedown', () => {
+            key.classList.add('pressed');
+            const note = parseInt(key.getAttribute('data-note'));
+            playMIDINote(device, note);
+            console.log(`Note ${note} pressed`);
+        });
+        key.addEventListener('mouseup', () => {
+            key.classList.remove('pressed');
+        });
+    });
+}
+
+// Function to play a MIDI note
+function playMIDINote(device, note) {
+    let midiChannel = 0;
+
+    let noteOnMessage = [144 + midiChannel, note, 100];
+    let noteOffMessage = [128 + midiChannel, note, 0];
+    let midiPort = 0;
+    let noteDurationMs = 250;
+
+    let noteOnEvent = new RNBO.MIDIEvent(device.context.currentTime * 1000, midiPort, noteOnMessage);
+    let noteOffEvent = new RNBO.MIDIEvent(device.context.currentTime * 1000 + noteDurationMs, midiPort, noteOffMessage);
+
+    device.scheduleEvent(noteOnEvent);
+    device.scheduleEvent(noteOffEvent);
+}
+
 function setupGridControl(device) {
     const gridContainer = document.getElementById('grid-container');
     const fingerDot = document.getElementById('finger-dot');
 
-    // Function to calculate X and Y from touch or mouse position
+    // Adjust the size of the large dot following the finger (1/3 bigger)
+    fingerDot.style.width = "35.56px"; // 1/3 larger than 26.67px
+    fingerDot.style.height = "35.56px";
+
     function calculateXY(clientX, clientY) {
         const rect = gridContainer.getBoundingClientRect();
-        const x = ((clientX - rect.left) / rect.width) * 127;
-        const y = ((clientY - rect.top) / rect.height) * 127;
-        return {
-            x: Math.min(127, Math.max(0, x)),
-            y: Math.min(127, Math.max(0, y))
-        };
+        const x = Math.min(127, Math.max(0, Math.floor(((clientX - rect.left) / rect.width) * 128)));
+        const y = Math.min(127, Math.max(0, Math.floor(((clientY - rect.top) / rect.height) * 128)));
+        return { x, y };
     }
 
-    // Function to send X and Y values to RNBO using the same method as sliders
     function updateRNBOValues(x, y) {
-        // Find the parameters by index if they are parameters 0 and 1
-        // Or adjust the code to find parameters by name or id if necessary
-        const paramX = device.parameters[1]; // Assuming X is parameter at index 1
-        const paramY = device.parameters[0]; // Assuming Y is parameter at index 0
-
-        // Log parameter IDs and names to verify
-        // console.log("Parameters:", device.parameters);
-
-        if (paramX) {
-            paramX.value = x;
-        }
-        if (paramY) {
-            paramY.value = y;
-        }
+        const paramX = device.parameters.find(param => param.id.includes("X"));
+        const paramY = device.parameters.find(param => param.id.includes("Y"));
+        if (paramX) paramX.value = x;
+        if (paramY) paramY.value = y;
     }
 
-    // Update coordinates and send to RNBO
+    function createSpark(pageX, pageY) {
+        const spark = document.createElement("div");
+        spark.classList.add("spark");
+        
+        const size = Math.random() * Math.random() * 6 + 1; // Smaller exponential size range
+        spark.style.width = `${size}px`;
+        spark.style.height = spark.style.width;
+
+        const randomColor = `hsl(${Math.floor(Math.random() * 360)}, 100%, 50%)`;
+        spark.style.backgroundColor = randomColor;
+
+        spark.style.left = `${pageX}px`;
+        spark.style.top = `${pageY}px`;
+
+        const angle = Math.random() * 360;
+        const speed = Math.random() * 25 + 12.5;
+        spark.style.transform = `translate(${Math.cos(angle) * speed}px, ${Math.sin(angle) * speed}px)`;
+
+        document.body.appendChild(spark);
+
+        setTimeout(() => {
+            spark.remove();
+        }, 1000);
+    }
+
     function updateCoordinates(event) {
         event.preventDefault();
         let clientX, clientY, pageX, pageY;
@@ -277,7 +266,7 @@ function setupGridControl(device) {
         // Update RNBO with X and Y values
         updateRNBOValues(x, y);
 
-        // Update the finger dot position on the grid (using clientX/clientY for viewport)
+        // Update the finger dot position (using clientX/clientY for within viewport)
         const rect = gridContainer.getBoundingClientRect();
         const relativeX = clientX - rect.left;
         const relativeY = clientY - rect.top;
@@ -285,8 +274,8 @@ function setupGridControl(device) {
         fingerDot.style.left = `${relativeX}px`;
         fingerDot.style.top = `${relativeY}px`;
 
-        // Create spark trail (if you have the createSpark function)
-        // createSpark(pageX, pageY);
+        // Create a spark trail (using pageX/pageY for entire page)
+        createSpark(pageX, pageY);
     }
 
     // Event listeners for touch/mouse events
@@ -314,14 +303,20 @@ function setupGridControl(device) {
     fingerDot.style.display = 'none';
 }
 
+// Attach listeners to RNBO outports
 function attachOutports(device) {
     const outports = device.outports;
-    if (outports.length < 1) {
-        document.getElementById("rnbo-console").removeChild(document.getElementById("rnbo-console-div"));
+    const consoleDiv = document.getElementById("rnbo-console-div");
+    const noOutportsLabel = document.getElementById("no-outports-label");
+
+    if (outports.length === 0 && consoleDiv) {
+        document.getElementById("rnbo-console").removeChild(consoleDiv);
         return;
     }
+    if (noOutportsLabel) {
+        document.getElementById("rnbo-console").removeChild(noOutportsLabel);
+    }
 
-    document.getElementById("rnbo-console").removeChild(document.getElementById("no-outports-label"));
     device.messageEvent.subscribe((ev) => {
         if (outports.findIndex(elt => elt.tag === ev.tag) < 0) return;
         console.log(`${ev.tag}: ${ev.payload}`);
@@ -329,29 +324,37 @@ function attachOutports(device) {
     });
 }
 
+// Load RNBO presets
 function loadPresets(device, patcher) {
-    let presets = patcher.presets || [];
-    if (presets.length < 1) {
-        document.getElementById("rnbo-presets").removeChild(document.getElementById("preset-select"));
-        return;
+    const presets = patcher.presets || [];
+    if (presets.length === 0) return;
+
+    const presetSelect = document.getElementById("preset-select");
+    const noPresetsLabel = document.getElementById("no-presets-label");
+
+    if (noPresetsLabel) {
+        document.getElementById("rnbo-presets").removeChild(noPresetsLabel);
     }
 
-    document.getElementById("rnbo-presets").removeChild(document.getElementById("no-presets-label"));
-    let presetSelect = document.getElementById("preset-select");
     presets.forEach((preset, index) => {
         const option = document.createElement("option");
         option.innerText = preset.name;
         option.value = index;
         presetSelect.appendChild(option);
     });
+
     presetSelect.onchange = () => device.setPreset(presets[presetSelect.value].preset);
 }
 
+// Initialize MIDI keyboard
 function makeMIDIKeyboard(device) {
-    let mdiv = document.getElementById("rnbo-clickable-keyboard");
+    const mdiv = document.getElementById("rnbo-clickable-keyboard");
+    const noMidiLabel = document.getElementById("no-midi-label");
     if (device.numMIDIInputPorts === 0) return;
 
-    mdiv.removeChild(document.getElementById("no-midi-label"));
+    if (noMidiLabel) {
+        mdiv.removeChild(noMidiLabel);
+    }
 
     const midiNotes = [48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59];
     midiNotes.forEach(note => {
@@ -359,30 +362,9 @@ function makeMIDIKeyboard(device) {
         const label = document.createElement("p");
         label.textContent = note;
         key.appendChild(label);
+
         key.addEventListener("pointerdown", () => {
-            let midiChannel = 0;
-
-            let noteOnMessage = [
-                144 + midiChannel, // Code for a note on: 10010000 & midi channel (0-15)
-                note, // MIDI Note
-                100 // MIDI Velocity
-            ];
-
-            let noteOffMessage = [
-                128 + midiChannel, // Code for a note off: 10000000 & midi channel (0-15)
-                note, // MIDI Note
-                0 // MIDI Velocity
-            ];
-
-            let midiPort = 0;
-            let noteDurationMs = 250;
-
-            let noteOnEvent = new RNBO.MIDIEvent(device.context.currentTime * 1000, midiPort, noteOnMessage);
-            let noteOffEvent = new RNBO.MIDIEvent(device.context.currentTime * 1000 + noteDurationMs, midiPort, noteOffMessage);
-
-            device.scheduleEvent(noteOnEvent);
-            device.scheduleEvent(noteOffEvent);
-
+            playMIDINote(device, note);
             key.classList.add("clicked");
         });
 
@@ -392,5 +374,5 @@ function makeMIDIKeyboard(device) {
     });
 }
 
-// Run the setup function
+// Call the setup function
 setup();

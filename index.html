@@ -13,7 +13,7 @@
 
     <noscript>You need to enable JavaScript to run this app.</noscript>
 
-    <h1 id="neptr-title">NEPTR interactive</h1> <!-- Title updated to "NEPTR (interactive)" -->
+    <h1 id="neptr-title">NEPTR interactive</h1>
 
     <p id="start-instruction">unsilence phone, click 48, drag finger around :0</p>
 
@@ -22,17 +22,31 @@
 
     <!-- RNBO UI Root -->
     <div id="rnbo-root">
-        <!-- Title -->
-        <div>
-        </div>
+        <div></div>
 
-        <!-- MIDI Keyboard Section -->
+        <!-- MIDI Note Buttons -->
         <div id="rnbo-clickable-keyboard">
             <h2>midi notes</h2>
             <em id="no-midi-label">No MIDI input</em>
         </div>
 
-        <br> <!-- New line added here -->
+        <!-- Piano Keyboard Section -->
+        <div id="piano-keyboard">
+            <!-- White keys -->
+            <div class="white-key" data-note="48"></div>
+            <div class="white-key" data-note="50"></div>
+            <div class="white-key" data-note="52"></div>
+            <div class="white-key" data-note="53"></div>
+            <div class="white-key" data-note="55"></div>
+            <div class="white-key" data-note="57"></div>
+            <div class="white-key" data-note="59"></div>
+            <!-- Black keys -->
+            <div class="black-key" data-note="49"></div>
+            <div class="black-key" data-note="51"></div>
+            <div class="black-key" data-note="54"></div>
+            <div class="black-key" data-note="56"></div>
+            <div class="black-key" data-note="58"></div>
+        </div>
 
         <!-- Console Output Section -->
         <div id="rnbo-console">
@@ -49,8 +63,6 @@
             <select id="preset-select"></select>
         </div>
 
-        <br> <!-- New line added here -->
-
         <!-- GRID for X and Y control -->
         <div id="grid-container">
             <div id="finger-dot"></div>
@@ -63,125 +75,8 @@
         </div>
     </div>
 
-    <!-- RNBO Device Script (Optional) -->
+    <!-- External JavaScript for application functionality -->
     <script type="text/javascript" src="js/guardrails.js"></script>
     <script type="text/javascript" src="js/app.js"></script>
-
-    <!-- Grid Control for X and Y parameters and sparkles -->
-    <script>
-        // Reference to RNBO device
-        let rnboDevice = null;
-
-        // Reference to grid elements
-        const gridContainer = document.getElementById('grid-container');
-        const fingerDot = document.getElementById('finger-dot');
-
-        // Adjust the size of the large dot following the finger (1/3 bigger)
-        fingerDot.style.width = "35.56px"; // 1/3 larger than 26.67px
-        fingerDot.style.height = "35.56px";
-
-        // Function to calculate X and Y from touch or mouse position
-        function calculateXY(clientX, clientY) {
-            const rect = gridContainer.getBoundingClientRect();
-            const x = Math.min(127, Math.max(0, Math.floor(((clientX - rect.left) / rect.width) * 128)));
-            const y = Math.min(127, Math.max(0, Math.floor(((clientY - rect.top) / rect.height) * 128)));
-            return { x, y };
-        }
-
-        // Function to send X and Y values to RNBO
-        function updateRNBOValues(x, y) {
-            if (rnboDevice) {
-                const paramX = rnboDevice.parameters.find(param => param.paramId === "MIDI+ENC/X");
-                const paramY = rnboDevice.parameters.find(param => param.paramId === "MIDI+ENC/Y");
-
-                if (paramX) paramX.value = x;
-                if (paramY) paramY.value = y;
-            }
-        }
-
-        // Function to create spark trails (relative to the entire page) with exponential sizing
-        function createSpark(pageX, pageY) {
-            const spark = document.createElement("div");
-            spark.classList.add("spark");
-            
-            // Exponential sizing (smaller sparks more often, bigger sparks more rare)
-            const size = Math.random() * Math.random() * 10 + 2; // Exponential size distribution
-            spark.style.width = `${size}px`;
-            spark.style.height = spark.style.width;
-
-            spark.style.left = `${pageX}px`;
-            spark.style.top = `${pageY}px`;
-
-            // Random fly-out direction and speed (expanded by 1/4 farther)
-            const angle = Math.random() * 360;
-            const speed = Math.random() * 25 + 12.5; // Increased speed for 1/4 farther range
-            spark.style.transform = `translate(${Math.cos(angle) * speed}px, ${Math.sin(angle) * speed}px)`;
-
-            document.body.appendChild(spark);
-
-            // Remove spark after animation
-            setTimeout(() => {
-                spark.remove();
-            }, 1000); // Remove after 1 second
-        }
-
-        // Update coordinates and send to RNBO
-        function updateCoordinates(event) {
-            event.preventDefault();
-            let clientX, clientY, pageX, pageY;
-
-            if (event.touches && event.touches.length > 0) {
-                clientX = event.touches[0].clientX;
-                clientY = event.touches[0].clientY;
-                pageX = event.touches[0].pageX;
-                pageY = event.touches[0].pageY;
-            } else {
-                clientX = event.clientX;
-                clientY = event.clientY;
-                pageX = event.pageX;
-                pageY = event.pageY;
-            }
-
-            const { x, y } = calculateXY(clientX, clientY);
-
-            // Update RNBO with X and Y values
-            updateRNBOValues(x, y);
-
-            // Update the finger dot position (using clientX/clientY for within viewport)
-            const rect = gridContainer.getBoundingClientRect();
-            const relativeX = clientX - rect.left;
-            const relativeY = clientY - rect.top;
-
-            fingerDot.style.left = `${relativeX}px`;
-            fingerDot.style.top = `${relativeY}px`;
-
-            // Create a spark trail (using pageX/pageY for entire page)
-            createSpark(pageX, pageY);
-        }
-
-        // Event listeners for touch/mouse events
-        gridContainer.addEventListener('touchmove', updateCoordinates);
-        gridContainer.addEventListener('mousemove', updateCoordinates);
-
-        gridContainer.addEventListener('touchstart', (event) => {
-            fingerDot.style.display = 'block';
-            updateCoordinates(event);
-        });
-
-        gridContainer.addEventListener('touchend', () => {
-            fingerDot.style.display = 'none';
-        });
-
-        gridContainer.addEventListener('mouseenter', () => {
-            fingerDot.style.display = 'block';
-        });
-
-        gridContainer.addEventListener('mouseleave', () => {
-            fingerDot.style.display = 'none';
-        });
-
-        // Hide the finger dot initially
-        fingerDot.style.display = 'none';
-    </script>
 </body>
 </html>

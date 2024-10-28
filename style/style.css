@@ -6,15 +6,14 @@
     background-color: #4d004d; /* Lighter purple */
     position: relative;
     margin: auto; /* Center the grid */
-    border: 5px solid; /* Set the size of the border */
-    animation: rainbow-border 10s infinite linear; /* Apply the rainbow animation */
+    border: 0.5px solid; /* Thin border */
+    animation: rainbow-border 1s infinite linear; /* Apply the rainbow animation */
     overflow: hidden;
     touch-action: none; /* Prevent scrolling interference */
     box-sizing: border-box; /* Include the border in sizing */
     margin-top: 10vh; /* Adjust for centering vertically */
     margin-bottom: 10vh; /* Keep space at the bottom */
-    /* Thin animated rainbow border */
-    border: 0.5px solid;
+    /* Animated rainbow border */
     border-image: conic-gradient(
         from 0deg,
         hsl(0, 100%, 50%),
@@ -25,7 +24,6 @@
         hsl(300, 100%, 50%),
         hsl(360, 100%, 50%)
     ) 1;
-    animation: rainbow-border 1s infinite linear;
 }
 
 /* Animating the rainbow border */
@@ -56,7 +54,73 @@
     }
 }
 
-/* Other styles remain the same */
+#piano-keyboard {
+    position: relative;
+    width: 75%; /* Overall keyboard width */
+    max-width: 400px; /* Slimmer max-width */
+    height: 140px; /* Adjusted height */
+    margin: 20px auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+/* White keys styling */
+.white-key {
+    flex: 1 1 28px; /* Slimmer white key width */
+    height: 100%;
+    background-color: #ffffff;
+    border: 1px solid #000;
+    margin: 0 1px;
+    z-index: 1;
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.2s ease;
+}
+
+.white-key:active {
+    background-color: #ccc;
+}
+
+/* Black keys styling */
+.black-key {
+    position: absolute;
+    width: 28px; /* Fatter black keys */
+    height: 60%;
+    background-color: #000;
+    border: 1px solid #000;
+    z-index: 2;
+    cursor: pointer;
+    top: 0;
+    margin-left: -10px; /* Slight right shift for better centering */
+    transition: background-color 0.2s ease;
+}
+
+.black-key:active {
+    background-color: #333;
+}
+
+/* Position each black key centered over its white keys with slight right shift */
+.black-key[data-note="49"] {
+    left: calc(100% / 7 * 1 - 4px); /* Centered with slight right offset */
+}
+.black-key[data-note="51"] {
+    left: calc(100% / 7 * 2 - 4px); /* Centered with slight right offset */
+}
+.black-key[data-note="54"] {
+    left: calc(100% / 7 * 4 - 4px); /* Centered with slight right offset */
+}
+.black-key[data-note="56"] {
+    left: calc(100% / 7 * 5 - 4px); /* Centered with slight right offset */
+}
+.black-key[data-note="58"] {
+    left: calc(100% / 7 * 6 - 4px); /* Centered with slight right offset */
+}
+
+
+
+
+/* General styling remains */
 html, body {
     margin: 0;
     padding: 0;
@@ -112,26 +176,7 @@ h2, em {
 }
 
 #rnbo-clickable-keyboard {
-    display: flex;
-    flex-wrap: wrap;
-    padding: 10px;
-    margin-bottom: 20px;
-}
-
-#rnbo-clickable-keyboard > div {
-    margin: 2px;
-    border: solid #ffffff 1px;
-    min-height: 50px;
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #001f3f;
-}
-
-#rnbo-clickable-keyboard > div.clicked {
-    background: #222222;
-    color: #dddddd;
+    display: none; /* Hide old MIDI buttons but keep style */
 }
 
 #rnbo-parameter-sliders {
@@ -199,11 +244,18 @@ input[type="range"] {
 
 .spark {
     position: absolute;
-    background-color: #ff00ff;
     border-radius: 50%;
     opacity: 0.8;
     pointer-events: none;
-    animation: disappear 1s ease-out forwards;
+    animation: disappear 1s ease-out forwards, colorChange 1s infinite;
+}
+
+@keyframes colorChange {
+    0% { background-color: #ff33be; }  /* Red-orange */
+    25% { background-color: #d160a3; } /* Green */
+    50% { background-color: #811861; } /* Blue */
+    75% { background-color: #060004; } /* Pink */
+    100% { background-color: #e6d7df; } /* Yellow */
 }
 
 @keyframes disappear {
