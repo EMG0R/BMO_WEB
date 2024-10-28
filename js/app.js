@@ -203,8 +203,8 @@ function setupGridControl(device) {
     const fingerDot = document.getElementById('finger-dot');
 
     // Adjust the size of the large dot following the finger (1/3 bigger)
-    fingerDot.style.width = "35.56px"; // 1/3 larger than 26.67px
-    fingerDot.style.height = "35.56px";
+    fingerDot.style.width = "20px"; // 1/3 larger than 26.67px
+    fingerDot.style.height = "20px";
 
     function calculateXY(clientX, clientY) {
         const rect = gridContainer.getBoundingClientRect();
