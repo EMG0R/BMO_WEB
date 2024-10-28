@@ -49,7 +49,7 @@ h2, em {
     text-align: center;
     font-family: 'Courier New', Courier, monospace; /* Techy font */
     color: #ffffff; /* White color */
-    font-size: 1.1em; /* Slightly smaller than the title */
+    font-size: 0.88em; /* Slightly smaller than the title */
     margin-bottom: 14px; /* Space below the instruction */
 }
 
@@ -208,7 +208,7 @@ h2, em {
     font-family: 'Courier New', Courier, monospace; /* Techy and boxy font */
     margin-top: 0; /* Reset default margin */
     margin-bottom: 10px; /* Space below the title */
-    font-size: 2.5em; /* Larger font size */
+    font-size: 2em; /* Larger font size */
     letter-spacing: 2px; /* Spacing between letters */
     height: 100px; /* Set a height to help vertical centering */
 }
