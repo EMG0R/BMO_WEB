@@ -6,24 +6,6 @@ html, body {
     font-family: 'Courier New', Courier, monospace; /* Techy and boxy font */
 }
 
-#neptr-title {
-    text-align: center;
-    color: #ffffff; /* White title */
-    font-family: 'Courier New', Courier, monospace; /* Techy and boxy font */
-    margin-top: 20px; /* Space above the title */
-    font-size: 2.5em; /* Large font for the title */
-    letter-spacing: 2px; /* Add a bit of letter spacing for a modern look */
-}
-
-/* Centered instruction text */
-#start-instruction {
-    text-align: center;
-    font-family: 'Courier New', Courier, monospace; /* Techy font */
-    color: #ffffff; /* White color */
-    font-size: 0.8em; /* Slightly smaller than the title */
-    margin-bottom: 20px; /* Space below the instruction */
-}
-
 #rnbo-root {
     height: 100vh;
     width: 100vw;
@@ -48,6 +30,30 @@ h2, em {
     padding: 20px; /* Add space around the root */
 }
 
+/* Center the title horizontally and vertically */
+#neptr-title {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    color: #ffffff; /* White title */
+    font-family: 'Courier New', Courier, monospace; /* Techy and boxy font */
+    margin-top: 0; /* Reset default margin */
+    margin-bottom: 10px; /* Space below the title */
+    font-size: 1.6em; /* Larger font size */
+    letter-spacing: 2px; /* Spacing between letters */
+    height: 100px; /* Set a height to help vertical centering */
+}
+
+/* Centered instruction text */
+#start-instruction {
+    text-align: center;
+    font-family: 'Courier New', Courier, monospace; /* Techy font */
+    color: #ffffff; /* White color */
+    font-size: 0.8em; /* Slightly smaller than the title */
+    margin-bottom: 20px; /* Space below the instruction */
+}
+
+/* Ensure rnbo root maintains spacing */
 #rnbo-clickable-keyboard {
     display: flex;
     flex-wrap: wrap;
@@ -71,6 +77,7 @@ h2, em {
     color: #dddddd;
 }
 
+/* Sliders section */
 #rnbo-parameter-sliders {
     display: flex;
     flex-direction: column;
@@ -81,11 +88,34 @@ h2, em {
 
 #rnbo-parameter-sliders > div {
     display: flex;
+    align-items: center; /* Align slider and label vertically */
     margin-bottom: 10px; /* Space between each slider */
 }
 
 #rnbo-parameter-sliders > div > input:first-of-type {
     flex-grow: 1;
+}
+
+/* Parameter label styles */
+.param-label {
+    width: 100px; /* Set a fixed width for all labels to align sliders */
+    font-size: 0.9em; /* Slightly smaller text size for labels */
+    padding-right: 10px; /* Space between label and slider */
+    white-space: nowrap; /* Prevent text from wrapping */
+    overflow: hidden; /* Hide overflow text */
+    text-overflow: ellipsis; /* Show ellipsis for long names */
+}
+
+/* Input and form elements styling */
+input, select, textarea {
+    background-color: #001f3f; /* Dark blue */
+    color: #ffffff; /* White text */
+    border: 1px solid #ffffff; /* White border for inputs */
+    font-family: 'Courier New', Courier, monospace; /* Techy font */
+}
+
+input[type="range"] {
+    accent-color: #ffffff; /* White accent color for sliders */
 }
 
 /* Grid-specific styles */
@@ -132,16 +162,4 @@ h2, em {
         width: 92vw;
         height: 92vh;
     }
-}
-
-/* Input and form elements styling */
-input, select, textarea {
-    background-color: #001f3f; /* Dark blue */
-    color: #ffffff; /* White text */
-    border: 1px solid #ffffff; /* White border for inputs */
-    font-family: 'Courier New', Courier, monospace; /* Techy font */
-}
-
-input[type="range"] {
-    accent-color: #ffffff; /* White accent color for sliders */
 }
