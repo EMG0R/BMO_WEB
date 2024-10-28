@@ -9,6 +9,7 @@ html, body {
 #rnbo-root {
     height: 100vh;
     width: 100vw;
+    box-sizing: border-box; /* Ensure padding/margins are calculated in sizing */
 }
 
 #background {
@@ -20,21 +21,25 @@ h2, em {
     width: 100%;
     font-family: 'Courier New', Courier, monospace; /* Techy and boxy font */
     color: #ffffff; /* White color for headings */
+    padding-bottom: 10px; /* Space below the heading */
 }
 
 #rnbo-root {
     margin: auto;
     max-width: 540px;
+    padding: 20px; /* Add space around the root */
 }
 
 #rnbo-clickable-keyboard {
     display: flex;
     flex-wrap: wrap;
+    padding: 10px; /* Add space inside the keyboard section */
+    margin-bottom: 20px; /* Space between keyboard and other sections */
 }
 
 #rnbo-clickable-keyboard > div {
     margin: 2px;
-    border: solid #ffffff 1px; /* White border */
+    border: solid #800080 1px; /* Purple border for the keyboard buttons */
     min-height: 50px;
     flex-grow: 1;
     display: flex;
@@ -51,11 +56,14 @@ h2, em {
 #rnbo-parameter-sliders {
     display: flex;
     flex-direction: column;
-    margin-top: 10px; /* Spacing above the sliders */
+    margin-top: 20px; /* Space above the sliders */
+    padding: 10px; /* Space around sliders */
+    margin-bottom: 20px; /* Add space below the sliders */
 }
 
 #rnbo-parameter-sliders > div {
     display: flex;
+    margin-bottom: 10px; /* Space between each slider */
 }
 
 #rnbo-parameter-sliders > div > input:first-of-type {
@@ -64,14 +72,15 @@ h2, em {
 
 /* Grid-specific styles */
 #grid-container {
-    width: 92vw; /* 92% of the viewport width (8% smaller than the full width) */
-    height: 92vh; /* 92% of the viewport height (8% smaller than the full height) */
+    width: 92vw; /* 8% smaller than the viewport width */
+    height: 92vh; /* 8% smaller than the viewport height */
     background-color: #4d004d; /* Lighter purple */
     position: relative;
-    margin: auto; /* Center the grid in the available space */
-    border: 2px solid #800080; /* Purple border */
+    margin: auto; /* Center the grid */
+    border: 2px solid #800080; /* Only the grid has a purple border */
     overflow: hidden;
-    touch-action: none; /* Ensures touch events are properly handled */
+    touch-action: none; /* Prevent scrolling interference */
+    box-sizing: border-box; /* Include the border in sizing */
 }
 
 #finger-dot {
@@ -102,8 +111,8 @@ h2, em {
 /* iPhone-specific media query */
 @media only screen and (max-width: 768px) {
     #grid-container {
-        width: 100vw;
-        height: 100vh;
+        width: 92vw;
+        height: 92vh;
     }
 }
 
@@ -111,7 +120,7 @@ h2, em {
 input, select, textarea {
     background-color: #001f3f; /* Dark blue */
     color: #ffffff; /* White text */
-    border: 1px solid #ffffff; /* White border */
+    border: 1px solid #ffffff; /* White border for inputs */
     font-family: 'Courier New', Courier, monospace; /* Techy font */
 }
 
