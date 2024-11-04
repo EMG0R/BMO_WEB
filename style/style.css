@@ -1,60 +1,87 @@
 /* Grid Wrapper */
 #grid-wrapper {
-    width: clamp(200px, 40vw, 400px); /* Responsive width */
-    aspect-ratio: 1; /* Keep the grid square */
+    width: 90vw; /* Full width of the viewport */
+    max-width: 400px; /* Maximum width */
     position: relative; /* For absolute positioning of child elements */
-    margin: 5vh auto; /* Center horizontally */
+    margin: 5vh 15vw; /* Increased right margin to center */
+    padding-left: 0; /* Remove left padding */
+    padding-right: 20px; /* Keep right padding for symmetry */
+    box-sizing: border-box; /* Include padding and border in total dimensions */
 }
 
 /* Grid Container */
 #grid-container {
-    width: 100%; /* Full width of the wrapper */
-    height: 100%; /* Full height of the wrapper */
-    background-color: #4d004d; /* Original background color */
-    position: relative; /* Position for animations, etc. */
+    width: 30vw; /* Set width to 30% of the viewport for a skinnier look */
+    height: 60vh; /* Set height to 60% of the viewport for more height */
+    background-color: #4d004d; /* Keep the original background color */
+    position: relative; /* For positioning */
+    max-width: 250px; /* Set a maximum width limit */
+    max-height: 500px; /* Max height to keep it within bounds */
 }
 
 /* Offset Control */
 #offset-control {
     width: 25px; /* Fixed width */
-    height: calc(100% - 20px); /* Responsive height */
-    background-color: #1A5D9B; /* Darker blue color */
-    position: absolute; /* Positioned relative to the grid */
-    left: calc(-1 * (25px + 10px)); /* Adjust to prevent sticking to the right */
-    top: 10px; /* Adjust top position */
+    height: 60vh; /* Match the height of the grid */
+    background-color: #FFC300; /* Dark yellow color */
+    position: absolute; /* Position relative to the grid */
+    left: -30px; /* Position closer to the grid */
+    top: 10%; /* Align with grid vertically */
     border: 2px solid #ffffff; /* White outline */
-    border-radius: 5px; /* Rounded edges */
+    border-radius: 5px; /* Slightly rounded edges */
     overflow: hidden; /* Hide overflow */
     touch-action: none; /* Prevent default touch actions */
 }
 
-/* Gradient Circle Effect */
+/* Gradient Circle */
 #offset-control::before {
     content: '';
     position: absolute;
-    left: 50%;
+    left: 50%; /* Center horizontally */
     top: var(--circle-position, 0%);
     transform: translate(-50%, -50%);
-    width: clamp(15px, 30%, 30px); /* Responsive size */
-    height: clamp(15px, 30%, 30px); /* Responsive size */
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.7) 0%, transparent 70%);
+    width: 60%; /* Responsive size relative to offset control */
+    height: 60%; /* Responsive size */
+    background: radial-gradient(circle, rgba(255, 255, 0, 0.7) 0%, transparent 70%); /* Bright yellow gradient */
     pointer-events: none; /* Allow mouse events to pass through */
 }
 
 /* Glitch Button */
 #glitch-button {
     position: absolute;
-    bottom: 100%; /* Position above the grid */
+    bottom: calc(100% + 10px); /* Position above the grid */
     right: 0; /* Align right edges */
-    margin-bottom: 10px; /* Space between the button and grid */
-    width: clamp(60px, 15%, 80px); /* Responsive width */
-    height: clamp(30px, 5%, 50px); /* Responsive height */
+    width: 80px; /* Fixed width */
+    height: 40px; /* Fixed height */
     background-color: grey; /* Button color */
     color: white; /* Text color */
     border: none; /* No border */
     border-radius: 5px; /* Rounded edges */
     cursor: pointer; /* Pointer on hover */
 }
+
+/* Media Queries for Small Screens */
+@media (max-width: 600px) {
+    /* Adjust Grid Wrapper */
+    #grid-wrapper {
+        width: 90vw; /* Full width on small screens */
+        max-width: none; /* No maximum width */
+        padding-left: 20px; /* Adjust padding */
+        padding-right: 20px; /* Adjust padding */
+    }
+
+    /* Adjust Offset Control */
+    #offset-control {
+        left: calc(-25px - 5vw); /* Adjust to align correctly */
+    }
+
+    /* Adjust Glitch Button */
+    #glitch-button {
+        width: 60px; /* Adjust size */
+        height: 30px; /* Adjust size */
+    }
+}
+
 
 
 
