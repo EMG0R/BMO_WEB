@@ -11,26 +11,26 @@
 
 /* Grid Container */
 #grid-container {
-    width: 30vw; /* Set width to 30% of the viewport for a skinnier look */
+    width: 60vw; /* Set width to 30% of the viewport for a skinnier look */
     height: 60vh; /* Set height to 60% of the viewport for more height */
     background-color: #4d004d; /* Keep the original background color */
     position: relative; /* For positioning */
-    max-width: 250px; /* Set a maximum width limit */
-    max-height: 500px; /* Max height to keep it within bounds */
+    max-width: 60vw; /* Set a maximum width limit */
+    max-height: 60vh; /* Max height to keep it within bounds */
 }
 
 /* Offset Control */
 #offset-control {
     width: 25px; /* Fixed width */
     height: 60vh; /* Match the height of the grid */
-    background-color: #FFC300; /* Dark yellow color */
+    background-color: #b28905; /* Dark yellow color */
     position: absolute; /* Position relative to the grid */
-    left: -30px; /* Position closer to the grid */
-    top: 10%; /* Align with grid vertically */
-    border: 2px solid #ffffff; /* White outline */
+    left: -4.5vh; /* Position closer to the grid */
+    top: 0; /* Align with the top of the grid */
+    border: 2px solid #ffea00; /* Yellow outline */
     border-radius: 5px; /* Slightly rounded edges */
     overflow: hidden; /* Hide overflow */
-    touch-action: none; /* Prevent default touch actions */
+    /* touch-action: none; */
 }
 
 /* Gradient Circle */
@@ -38,21 +38,22 @@
     content: '';
     position: absolute;
     left: 50%; /* Center horizontally */
-    top: var(--circle-position, 0%);
-    transform: translate(-50%, -50%);
-    width: 60%; /* Responsive size relative to offset control */
-    height: 60%; /* Responsive size */
+    top: var(--circle-position, 0%); /* Use the dynamic position */
+    transform: translate(-50%, -50%); /* Center the circle around the mouse */
+    width: 30px; /* Diameter of the gradient circle */
+    height: 30vh; /* Diameter of the gradient circle */
     background: radial-gradient(circle, rgba(255, 255, 0, 0.7) 0%, transparent 70%); /* Bright yellow gradient */
     pointer-events: none; /* Allow mouse events to pass through */
 }
+
 
 /* Glitch Button */
 #glitch-button {
     position: absolute;
     bottom: calc(100% + 10px); /* Position above the grid */
-    right: 0; /* Align right edges */
-    width: 80px; /* Fixed width */
-    height: 40px; /* Fixed height */
+    left: 22.3vh; /* Align right edges */
+    width: 5.5vh; /* Fixed width */
+    height: 3.1vh; /* Fixed height */
     background-color: grey; /* Button color */
     color: white; /* Text color */
     border: none; /* No border */
@@ -60,27 +61,6 @@
     cursor: pointer; /* Pointer on hover */
 }
 
-/* Media Queries for Small Screens */
-@media (max-width: 600px) {
-    /* Adjust Grid Wrapper */
-    #grid-wrapper {
-        width: 90vw; /* Full width on small screens */
-        max-width: none; /* No maximum width */
-        padding-left: 20px; /* Adjust padding */
-        padding-right: 20px; /* Adjust padding */
-    }
-
-    /* Adjust Offset Control */
-    #offset-control {
-        left: calc(-25px - 5vw); /* Adjust to align correctly */
-    }
-
-    /* Adjust Glitch Button */
-    #glitch-button {
-        width: 60px; /* Adjust size */
-        height: 30px; /* Adjust size */
-    }
-}
 
 
 
