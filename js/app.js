@@ -68,6 +68,7 @@ async function setup() {
     makeSliders(device);
     // Remove or comment out makeOffsetSlider(device); if it exists
     setupOffsetControl(device); // Add this line
+    setupOddsTRIGControl(device); // Add this line
     attachOutports(device);
     loadPresets(device, patcher);
     makeMIDIKeyboard(device);
@@ -204,6 +205,76 @@ function setupOffsetControl(device) {
 }
 
 
+function setupOddsTRIGControl(device) {
+    const oddsTRIGControl = document.getElementById('oddsTRIG-control');
+
+    // Define the range for oddsTRIG
+    const minOddsTRIG = 0;   // Minimum value
+    const maxOddsTRIG = 100; // Maximum value
+
+    // Variable to hold the last known circle position
+    let lastCirclePositionOdds = '0%';
+
+    // Function to update the oddsTRIG and gradient
+    function updateOddsTRIG(event) {
+        event.preventDefault();
+
+        let clientY;
+        if (event.touches && event.touches.length > 0) {
+            clientY = event.touches[0].clientY;
+        } else {
+            clientY = event.clientY;
+        }
+
+        const rect = oddsTRIGControl.getBoundingClientRect();
+        let y = clientY - rect.top;
+        y = Math.max(0, Math.min(y, rect.height)); // Clamp y to [0, height]
+
+        // Map y to oddsTRIG value (invert mapping so 100 is at the top)
+        const oddsTRIGValue = maxOddsTRIG - ((y / rect.height) * (maxOddsTRIG - minOddsTRIG));
+
+        // Update the oddsTRIG parameter
+        const oddsTRIGParam = device.parameters.find(param => param.name === "oddsTRIG");
+        if (oddsTRIGParam) {
+            oddsTRIGParam.value = oddsTRIGValue; // Set the oddsTRIG parameter to the calculated value
+        }
+
+        // Update the gradient circle position
+        const percentage = (y / rect.height) * 100;
+        oddsTRIGControl.style.setProperty('--circle-position-odds', `${percentage}%`);
+        lastCirclePositionOdds = `${percentage}%`; // Store the last known position
+    }
+
+    // Function to show the gradient circle
+    function showGradient() {
+        oddsTRIGControl.classList.add('active');
+    }
+
+    // Function to hide the gradient circle but keep it in the last position
+    function hideGradient() {
+        oddsTRIGControl.classList.remove('active');
+        oddsTRIGControl.style.setProperty('--circle-position-odds', lastCirclePositionOdds); // Retain last position
+    }
+
+    // Event listeners
+    oddsTRIGControl.addEventListener('mousemove', (event) => {
+        updateOddsTRIG(event);
+        showGradient();
+    });
+
+    oddsTRIGControl.addEventListener('touchmove', (event) => {
+        updateOddsTRIG(event);
+        showGradient();
+    });
+
+    oddsTRIGControl.addEventListener('mouseleave', hideGradient); // Keep last position
+    oddsTRIGControl.addEventListener('touchend', hideGradient); // Keep last position
+
+    // Prevent default touch actions to avoid scrolling
+    oddsTRIGControl.addEventListener('touchstart', (event) => {
+        event.preventDefault();
+    });
+}
 
 
 

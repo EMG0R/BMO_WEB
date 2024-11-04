@@ -23,7 +23,7 @@
 #offset-control {
     width: 25px; /* Fixed width */
     height: 60vh; /* Match the height of the grid */
-    background-color: #b28905; /* Dark yellow color */
+    background-color: #8d8302; /* Dark yellow color */
     position: absolute; /* Position relative to the grid */
     left: -4.5vh; /* Position closer to the grid */
     top: 0; /* Align with the top of the grid */
@@ -46,6 +46,31 @@
     pointer-events: none; /* Allow mouse events to pass through */
 }
 
+/* New OddsTRIG Control */
+#oddsTRIG-control {
+    width: 25px;
+    height: 60vh;
+    background-color: #1b652f; /* Dark green color */
+    position: absolute;
+    right: 10vh; /* Position on the right side */
+    top: 0;
+    border: 2px solid #68fc68; /* Bright green outline */
+    border-radius: 5px;
+    overflow: hidden;
+    /* touch-action: none; */
+}
+
+#oddsTRIG-control::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: var(--circle-position-odds, 0%);
+    transform: translate(-50%, -50%);
+    width: 30px;
+    height: 30vh;
+    background: radial-gradient(circle, rgba(0, 255, 0, 0.7) 0%, transparent 70%);
+    pointer-events: none;
+}
 
 /* Glitch Button */
 #glitch-button {
