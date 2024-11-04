@@ -25,7 +25,7 @@
     height: 60vh; /* Match the height of the grid */
     background-color: #8d8302; /* Dark yellow color */
     position: absolute; /* Position relative to the grid */
-    left: -4.5vh; /* Position closer to the grid */
+    left: -4.6vh; /* Position closer to the grid */
     top: 0; /* Align with the top of the grid */
     border: 2px solid #ffea00; /* Yellow outline */
     border-radius: 5px; /* Slightly rounded edges */
@@ -52,7 +52,7 @@
     height: 60vh;
     background-color: #1b652f; /* Dark green color */
     position: absolute;
-    right: 10vh; /* Position on the right side */
+    right: 9.3vh; /* Position on the right side */
     top: 0;
     border: 2px solid #68fc68; /* Bright green outline */
     border-radius: 5px;
@@ -78,7 +78,7 @@
     bottom: calc(100% + 10px); /* Position above the grid */
     left: 22.3vh; /* Align right edges */
     width: 5.5vh; /* Fixed width */
-    height: 3.1vh; /* Fixed height */
+    height: 3.5vh; /* Fixed height */
     background-color: grey; /* Button color */
     color: white; /* Text color */
     border: none; /* No border */
