@@ -66,6 +66,7 @@ async function setup() {
     device.node.connect(outputNode);
 
     makeSliders(device);
+    makeOffsetSlider(device); // Add this line
     attachOutports(device);
     loadPresets(device, patcher);
     makeMIDIKeyboard(device);
@@ -128,6 +129,64 @@ function makeSliders(device) {
         uiElements[param.id].text.value = param.value.toFixed(1);
     });
 }
+
+// Function to create a slider for the offset parameter
+function makeOffsetSlider(device) {
+    const pdiv = document.getElementById("offset-slider-container");
+
+    // Clear any existing slider elements
+    pdiv.innerHTML = ""; // Remove any previous slider to avoid duplicates
+
+    // Log available parameters to debug
+    console.log("Available Parameters:", device.parameters.map(p => p.name));
+
+    // Find the offset parameter
+    const offsetParam = device.parameters.find(param => param.name === "offset"); // Adjust if the name is different
+
+    if (!offsetParam) {
+        console.error("Offset parameter not found");
+        return; // Exit if the parameter is not found
+    }
+
+    // Create the slider element
+    const slider = document.createElement("input");
+    slider.type = "range";
+    slider.min = offsetParam.min;
+    slider.max = offsetParam.max;
+    slider.step = offsetParam.steps > 1 ? (offsetParam.max - offsetParam.min) / (offsetParam.steps - 1) : (offsetParam.max - offsetParam.min) / 1000;
+    slider.value = offsetParam.value;
+    slider.className = "parameter-slider offset-slider"; // Add a class for styling
+
+    // Update the background gradient based on slider value
+    const updateSliderGradient = () => {
+        const percentage = (slider.value - slider.min) / (slider.max - slider.min) * 100;
+        slider.style.setProperty('--thumb-position', `${percentage}%`); // Set CSS variable for gradient
+        offsetParam.value = parseFloat(slider.value);
+    };
+
+    // Event listener for slider input
+    slider.addEventListener("input", updateSliderGradient);
+
+    // Append the slider to the container
+    pdiv.appendChild(slider);
+
+    // Set the initial value of the slider based on the parameter value
+    updateSliderGradient(); // Initialize the gradient
+
+    // Subscribe to parameter changes
+    if (offsetParam.updateEvent) {
+        offsetParam.updateEvent.subscribe((param) => {
+            slider.value = param.value;
+            updateSliderGradient(); // Update the gradient when the parameter changes
+        });
+    } else {
+        console.error("No update event found for the offset parameter.");
+    }
+}
+
+
+
+
 
 function createSliderUI(param) {
     let label = document.createElement("label");

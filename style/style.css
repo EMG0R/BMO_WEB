@@ -19,12 +19,12 @@
     border-image: conic-gradient(
         from 0deg,
         hsl(0, 100%, 50%),
-        hsl(60, 100%, 50%),
-        hsl(120, 100%, 50%),
-        hsl(180, 100%, 50%),
-        hsl(240, 100%, 50%),
-        hsl(300, 100%, 50%),
-        hsl(360, 100%, 50%)
+        hsl(32, 100%, 50%),
+        hsl(51, 100%, 50%),
+        hsl(68, 100%, 51%),
+        hsl(124, 100%, 50%),
+        hsl(194, 100%, 50%),
+        hsl(238, 100%, 50%)
     ) 1;
 }
 
@@ -51,6 +51,62 @@
     margin-right: 60px; /* Optional: Adjust the spacing to the right */
     z-index: 1; /* Ensure the button is above other elements */
 }
+
+
+/* Styles for the offset slider container */
+#offset-slider-container {
+    width: 36vw; /* Match the width of the grid */
+    max-width: 270px; /* Match max-width to prevent overflow */
+    margin: 10px auto; /* Center the slider below the grid */
+    position: relative; /* Positioning for the thumb */
+}
+
+/* Slider track styling */
+.parameter-slider {
+    -webkit-appearance: none; /* Remove default styling */
+    width: 100%; /* Full width */
+    height: 20px; /* Height of the track */
+    background-color: #2E2E2E; /* Darker overall color */
+    border-radius: 0; /* Remove rounded edges for hard edges */
+    outline: none; /* Remove outline on focus */
+    touch-action: none; /* Prevent scrolling on touch devices */
+}
+
+/* Notch style for the slider thumb */
+.parameter-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Remove default styling */
+    appearance: none; /* Remove default styling */
+    width: 8px; /* Width of the notch */
+    height: 20px; /* Height of the notch */
+    background: #ffffff; /* White notch */
+    border-radius: 0; /* Hard edges for the notch */
+    cursor: pointer; /* Pointer cursor on hover */
+    margin-top: -2px; /* Center the notch vertically on the track */
+}
+
+/* Notch style for the thumb in Firefox */
+.parameter-slider::-moz-range-thumb {
+    width: 8px; /* Width of the notch */
+    height: 20px; /* Height of the notch */
+    background: #ffffff; /* White notch */
+    border-radius: 0; /* Hard edges for the notch */
+    cursor: pointer; /* Pointer cursor on hover */
+}
+
+/* Track styling for the mouse tracking effect */
+.parameter-slider:focus,
+.parameter-slider:hover {
+    background: #2E2E2E; /* Ensure the overall dark color persists */
+}
+
+/* Brighter gradient effect on the track where the thumb is */
+.parameter-slider:active {
+    background: linear-gradient(to right, #007BFF 0%, #007BFF var(--thumb-position), #2E2E2E var(--thumb-position), #2E2E2E 100%);
+}
+
+/* Additional JavaScript to update the thumb position for the gradient */
+
+
 
 
 /* Animating the rainbow border */
