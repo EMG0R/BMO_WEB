@@ -200,11 +200,6 @@ function playMIDINote(device, note) {
 
 function setupGridControl(device) {
     const gridContainer = document.getElementById('grid-container');
-    const fingerDot = document.getElementById('finger-dot');
-
-    // Adjust the size of the large dot following the finger (1/3 bigger)
-    fingerDot.style.width = "20px"; // 1/3 larger than 26.67px
-    fingerDot.style.height = "20px";
 
     function calculateXY(clientX, clientY) {
         const rect = gridContainer.getBoundingClientRect();
@@ -224,18 +219,21 @@ function setupGridControl(device) {
         const spark = document.createElement("div");
         spark.classList.add("spark");
         
-        const size = Math.random() * Math.random() * 6 + 1; // Smaller exponential size range
+        // Smaller spark size
+        const size = Math.random() * 8 + 3; // Sparkles will be between 3px and 11px
         spark.style.width = `${size}px`;
-        spark.style.height = spark.style.width;
+        spark.style.height = `${size}px`; // Ensure width and height are the same for circular sparkles
 
         const randomColor = `hsl(${Math.floor(Math.random() * 360)}, 100%, 50%)`;
         spark.style.backgroundColor = randomColor;
 
+        // Position the spark at the mouse/touch coordinates
         spark.style.left = `${pageX}px`;
         spark.style.top = `${pageY}px`;
 
+        // Increase the movement range of sparkles
         const angle = Math.random() * 360;
-        const speed = Math.random() * 25 + 12.5;
+        const speed = Math.random() * 30 + 10; // Longer range for more movement
         spark.style.transform = `translate(${Math.cos(angle) * speed}px, ${Math.sin(angle) * speed}px)`;
 
         document.body.appendChild(spark);
@@ -244,6 +242,20 @@ function setupGridControl(device) {
             spark.remove();
         }, 1000);
     }
+
+    document.getElementById("glitch-button").addEventListener("click", function() {
+        const glitchParam = device.parameters.find(param => param.id.includes("glitch")); // Adjust to match your parameter's ID
+        if (glitchParam) {
+            if (glitchParam.value === 0) {
+                glitchParam.value = 127; // Engage the glitch
+                this.style.backgroundColor = '#C0C0C0'; // Change to silver
+            } else {
+                glitchParam.value = 0; // Turn off the glitch
+                this.style.backgroundColor = '#808080'; // Change back to grey
+            }
+        }
+    });
+    
 
     function updateCoordinates(event) {
         event.preventDefault();
@@ -266,15 +278,7 @@ function setupGridControl(device) {
         // Update RNBO with X and Y values
         updateRNBOValues(x, y);
 
-        // Update the finger dot position (using clientX/clientY for within viewport)
-        const rect = gridContainer.getBoundingClientRect();
-        const relativeX = clientX - rect.left;
-        const relativeY = clientY - rect.top;
-
-        fingerDot.style.left = `${relativeX}px`;
-        fingerDot.style.top = `${relativeY}px`;
-
-        // Create a spark trail (using pageX/pageY for entire page)
+        // Create a spark trail at the touch/mouse position
         createSpark(pageX, pageY);
     }
 
@@ -283,25 +287,12 @@ function setupGridControl(device) {
     gridContainer.addEventListener('mousemove', updateCoordinates);
 
     gridContainer.addEventListener('touchstart', (event) => {
-        fingerDot.style.display = 'block';
         updateCoordinates(event);
     });
 
-    gridContainer.addEventListener('touchend', () => {
-        fingerDot.style.display = 'none';
-    });
-
-    gridContainer.addEventListener('mouseenter', () => {
-        fingerDot.style.display = 'block';
-    });
-
-    gridContainer.addEventListener('mouseleave', () => {
-        fingerDot.style.display = 'none';
-    });
-
-    // Hide the finger dot initially
-    fingerDot.style.display = 'none';
+    gridContainer.addEventListener('mouseenter', updateCoordinates);
 }
+
 
 // Attach listeners to RNBO outports
 function attachOutports(device) {

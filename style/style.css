@@ -1,18 +1,20 @@
+
+
 /* Grid-specific styles */
 #grid-container {
-    width: 72vw; /* Adjust width to fill 80% of the viewport */
-    max-width: 540px; /* Match max-width to prevent overflow beyond parameters */
-    height: 98vh; /* Increase height by 15% */
-    background-color: #4d004d; /* Lighter purple */
+    width: 36vw; /* Width remains responsive based on viewport */
+    height: auto; /* Height will adjust based on aspect ratio */
+    aspect-ratio: 1; /* Keep it square (1:1 ratio) */
+    max-width: 270px; /* Maximum width limit */
+    max-height: 500px; /* Maximum height limit */
+    background-color: #4d004d; /* Keep the original background color */
     position: relative;
-    margin: auto; /* Center the grid */
+    margin: 5vh auto; /* Center the grid with some margin at the top and bottom */
     border: 0.5px solid; /* Thin border */
     animation: rainbow-border 1s infinite linear; /* Apply the rainbow animation */
     overflow: hidden;
     touch-action: none; /* Prevent scrolling interference */
     box-sizing: border-box; /* Include the border in sizing */
-    margin-top: 10vh; /* Adjust for centering vertically */
-    margin-bottom: 10vh; /* Keep space at the bottom */
     /* Animated rainbow border */
     border-image: conic-gradient(
         from 0deg,
@@ -25,6 +27,31 @@
         hsl(360, 100%, 50%)
     ) 1;
 }
+
+/* Styles for the glitch button */
+#button-container {
+    text-align: center; /* Center the button container */
+    margin-bottom: 5px; /* Space between the button and the grid */
+    position: relative; /* Position relative to allow absolute positioning inside */
+}
+
+#glitch-button {
+    background-color: #808080; /* Grey color */
+    color: #ffffff; /* Text color */
+    border: none; /* No border */
+    border-radius: 4px; /* Slightly rounded corners for a rectangular look */
+    width: 40px; /* Set the new width */
+    height: 23px; /* Set the new height, rounded from 33.33px */
+    font-size: 0.8em; /* Slightly smaller font size */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+    position: absolute; /* Absolute positioning for the button */
+    bottom: 100%; /* Position it above the grid */
+    right: 0; /* Align it to the right of the button container */
+    margin-right: 100px; /* Optional: Adjust the spacing to the right */
+    z-index: 1; /* Ensure the button is above other elements */
+}
+
 
 /* Animating the rainbow border */
 @keyframes rainbow-border {
@@ -116,7 +143,6 @@
 .black-key[data-note="58"] {
     left: calc(100% / 7 * 6 - 4px); /* Centered with slight right offset */
 }
-
 
 
 
@@ -223,23 +249,13 @@ input[type="range"] {
     accent-color: #ffffff;
 }
 
-#rnbo-presets h2 {
-    font-size: 1em;
-    margin-bottom: 5px;
+#rnbo-presets {
+    margin: 5px 0; /* Reduce the vertical margin to minimize the gap */
+    padding: 1px; /* Optional: Add padding for aesthetics */
 }
 
 #rnbo-presets em {
-    font-size: 0.8em;
-}
-
-#finger-dot {
-    position: absolute;
-    width: 35px;
-    height: 35px;
-    background-color: #cb51cb;
-    border-radius: 50%;
-    pointer-events: none;
-    transform: translate(-50%, -50%);
+    font-size: 0.6em;
 }
 
 .spark {
@@ -251,11 +267,11 @@ input[type="range"] {
 }
 
 @keyframes colorChange {
-    0% { background-color: #ff33be; }  /* Red-orange */
-    25% { background-color: #d160a3; } /* Green */
-    50% { background-color: #811861; } /* Blue */
-    75% { background-color: #060004; } /* Pink */
-    100% { background-color: #e6d7df; } /* Yellow */
+    0% { background-color: #ff90dc; }  /* Red-orange */
+    25% { background-color: #ec5eff; } /* Green */
+    50% { background-color: #c72fd8; } /* Blue */
+    75% { background-color: #7a32ff; } /* Pink */
+    100% { background-color: #5d1eb1; } /* Yellow */
 }
 
 @keyframes disappear {
