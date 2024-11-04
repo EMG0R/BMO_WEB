@@ -1,102 +1,123 @@
 /* Grid Wrapper */
 #grid-wrapper {
-    width: 90vw; /* Full width of the viewport */
-    max-width: 400px; /* Maximum width */
-    position: relative; /* For absolute positioning of child elements */
-    margin: 5vh 15vw; /* Increased right margin to center */
-    padding-left: 0; /* Remove left padding */
-    padding-right: 20px; /* Keep right padding for symmetry */
-    box-sizing: border-box; /* Include padding and border in total dimensions */
+    position: relative;
+    width: 75%;           /* Similar to the piano keyboard width */
+    max-width: 400px;     /* Limit the maximum width */
+    height: 35vh;         /* Set the height to 35vh */
+    margin: 0 auto;       /* Center the grid wrapper */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 5vh;   /* Space between the grid and elements below it */
 }
 
-/* Grid Container */
-#grid-container {
-    width: 60vw; /* Set width to 30% of the viewport for a skinnier look */
-    height: 60vh; /* Set height to 60% of the viewport for more height */
-    background-color: #4d004d; /* Keep the original background color */
-    position: relative; /* For positioning */
-    max-width: 60vw; /* Set a maximum width limit */
-    max-height: 60vh; /* Max height to keep it within bounds */
+/* Controls and Grid Container */
+.controls-and-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
 }
 
-/* Offset Control */
+/* Offset Control (Left Slider) */
 #offset-control {
-    width: 25px; /* Fixed width */
-    height: 60vh; /* Match the height of the grid */
-    background-color: #8d8302; /* Dark yellow color */
-    position: absolute; /* Position relative to the grid */
-    left: -4.6vh; /* Position closer to the grid */
-    top: 0; /* Align with the top of the grid */
-    border: 2px solid #ffea00; /* Yellow outline */
-    border-radius: 5px; /* Slightly rounded edges */
-    overflow: hidden; /* Hide overflow */
-    /* touch-action: none; */
+    width: 25px;             /* Fixed width */
+    height: 35vh;            /* Match the reduced height */
+    background-color: #8d8302;
+    border: 2px solid #ffea00;
+    border-radius: 5px;
+    position: relative;
+    overflow: hidden;
+    margin-right: 10px;      /* Space between slider and grid */
 }
 
-/* Gradient Circle */
+/* Grid Container (X/Y Grid) */
+#grid-container {
+    width: 75vw;            /* Fixed width */
+    height: 35vh;            /* Match the reduced height */
+    background-color: #4d004d;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 0.5px solid;
+    animation: rainbow-border 1s infinite linear;
+    overflow: hidden;
+    touch-action: none;
+    box-sizing: border-box;
+}
+
+/* OddsTRIG Control (Right Slider) */
+#oddsTRIG-control {
+    width: 25px;             /* Fixed width */
+    height: 35vh;            /* Match the reduced height */
+    background-color: #1b652f;
+    border: 2px solid #68fc68;
+    border-radius: 5px;
+    position: relative;
+    overflow: hidden;
+    margin-left: 10px;       /* Space between grid and slider */
+}
+
+/* Gradient Circle for Offset Control */
 #offset-control::before {
     content: '';
     position: absolute;
-    left: 50%; /* Center horizontally */
-    top: var(--circle-position, 0%); /* Use the dynamic position */
-    transform: translate(-50%, -50%); /* Center the circle around the mouse */
-    width: 30px; /* Diameter of the gradient circle */
-    height: 30vh; /* Diameter of the gradient circle */
-    background: radial-gradient(circle, rgba(255, 255, 0, 0.7) 0%, transparent 70%); /* Bright yellow gradient */
-    pointer-events: none; /* Allow mouse events to pass through */
+    left: 50%;
+    top: var(--circle-position, 50%);  /* Centered vertically */
+    transform: translate(-50%, -50%);
+    width: 50px;             /* Larger size for a more impactful gradient effect */
+    height: 50px;            /* Match the width for a circular gradient */
+    background: radial-gradient(circle, rgba(255, 255, 0, 0.7) 0%, transparent 80%);
+    pointer-events: none;
 }
 
-/* New OddsTRIG Control */
-#oddsTRIG-control {
-    width: 25px;
-    height: 60vh;
-    background-color: #1b652f; /* Dark green color */
-    position: absolute;
-    right: 9.3vh; /* Position on the right side */
-    top: 0;
-    border: 2px solid #68fc68; /* Bright green outline */
-    border-radius: 5px;
-    overflow: hidden;
-    /* touch-action: none; */
-}
-
+/* Gradient Circle for OddsTRIG Control */
 #oddsTRIG-control::before {
     content: '';
     position: absolute;
     left: 50%;
-    top: var(--circle-position-odds, 0%);
+    top: var(--circle-position-odds, 50%);  /* Centered vertically */
     transform: translate(-50%, -50%);
-    width: 30px;
-    height: 30vh;
-    background: radial-gradient(circle, rgba(0, 255, 0, 0.7) 0%, transparent 70%);
+    width: 50px;             /* Larger size for a more impactful gradient effect */
+    height: 50px;            /* Match the width for a circular gradient */
+    background: radial-gradient(circle, rgba(0, 255, 0, 0.7) 0%, transparent 80%);
     pointer-events: none;
 }
 
-/* Glitch Button */
-#glitch-button {
+
+/* General Button Style (used for both buttons) */
+.control-button {
     position: absolute;
-    bottom: calc(100% + 10px); /* Position above the grid */
-    left: 22.3vh; /* Align right edges */
-    width: 5.5vh; /* Fixed width */
-    height: 3.5vh; /* Fixed height */
-    background-color: grey; /* Button color */
-    color: white; /* Text color */
-    border: none; /* No border */
-    border-radius: 5px; /* Rounded edges */
-    cursor: pointer; /* Pointer on hover */
+    top: -5vh; /* Positioned above the X/Y grid */
+    width: 10vw; /* Rectangular landscape width */
+    height: 4vh; /* Rectangular landscape height */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
-
-
-
-
-
-/* Styles for the glitch button */
-#button-container {
-    text-align: center; /* Center the button container */
-    margin-bottom: 5px; /* Space between the button and the grid */
-    position: relative; /* Position relative to allow absolute positioning inside */
+/* Glitch Button Specific */
+#glitch-button {
+    right: 18vw; /* Keep glitch button to the right */
+    background-color: grey; /* Default color */
 }
+
+#glitch-button.engaged {
+    background-color: #C0C0C0; /* Silver when engaged */
+}
+
+/* Clear Button Specific */
+#clear-button {
+    left: 18vw; /* Mirror position of the glitch button on the left */
+    background-color: #8B0000; /* Dark red color */
+}
+
+#clear-button.engaged {
+    background-color: #ff6666; /* Lighter red when engaged */
+}
+
 
 
 /* Animating the rainbow border */
@@ -127,15 +148,17 @@
     }
 }
 
+/* Piano Keyboard (incorporated into grid-wrapper) */
 #piano-keyboard {
     position: relative;
     width: 75%; /* Overall keyboard width */
     max-width: 400px; /* Slimmer max-width */
     height: 140px; /* Adjusted height */
-    margin: 20px auto;
+    margin: 30px auto;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    margin-bottom: 7vh; /* Add bottom margin to create space between the keyboard and grid */
 }
 
 /* White keys styling */
@@ -295,14 +318,65 @@ input[type="range"] {
     accent-color: #ffffff;
 }
 
+/* Preset Section */
 #rnbo-presets {
-    margin: 5px 0; /* Reduce the vertical margin to minimize the gap */
-    padding: 1px; /* Optional: Add padding for aesthetics */
+    width: 75%;
+    max-width: 400px; /* Same maximum width as other elements */
+    margin: 0 auto; /* Remove bottom margin to minimize gap */
+    text-align: center; /* Align text content to the center */
+    padding: 1vh 0; /* Padding to give a bit of space around the content */
+    box-sizing: border-box; /* Include padding and border in the width */
 }
 
-#rnbo-presets em {
-    font-size: 0.6em;
+/* Nerd Shit Toggle Button */
+#nerd-shit-toggle {
+    background: none;          /* No background color */
+    color: white;              /* White text */
+    border: 2px solid white;   /* White outline */
+    padding: 0.5em 1em;        /* Padding */
+    border-radius: 5px;        /* Rounded edges */
+    cursor: pointer;           /* Pointer cursor */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Courier New', Courier, monospace;
+    padding-bottom: 2vh; /* Balanced padding to match top spacing with the X/Y grid */
 }
+
+/* Arrow Indicator for Nerd Shit Button */
+#toggle-arrow {
+    width: 0;
+    height: 0;
+    margin-right: 0.5em;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-bottom: 15px solid white;  /* Default arrow pointing down */
+    transform: skewX(-15deg);         /* Geometric skew for a unique triangle look */
+    transition: transform 0.3s ease;
+}
+
+#nerd-shit-toggle.open #toggle-arrow {
+    transform: skewX(-15deg) rotate(180deg);  /* Rotate the arrow upwards when open */
+}
+
+/* Nerd Shit Toggle Button Styles */
+.nerd-shit-button {
+    border: 2px solid white; /* White outline */
+    background: none;        /* No background color */
+    color: white;            /* White text */
+    cursor: pointer;         /* Pointer cursor */
+    font-size: 1rem;         /* Adjust font size as needed */
+    padding: 5px 10px;       /* Adjust padding for spacing */
+    border-radius: 5px;      /* Rounded corners */
+    margin-bottom: 1rem;     /* Space below button */
+    transition: background-color 0.3s ease;
+}
+
+.nerd-shit-button:hover {
+    background-color: rgba(255, 255, 255, 0.1); /* Slightly highlight on hover */
+}
+
+
 
 .spark {
     position: absolute;
@@ -323,13 +397,4 @@ input[type="range"] {
 @keyframes disappear {
     0% { opacity: 1; }
     100% { opacity: 0; }
-}
-
-@media only screen and (max-width: 768px) {
-    #grid-container {
-        width: 80vw;
-        height: 80vh;
-        margin-top: 10vh;
-        margin-bottom: 10vh;
-    }
 }

@@ -65,8 +65,7 @@ async function setup() {
     if (dependencies.length) await device.loadDataBufferDependencies(dependencies);
     device.node.connect(outputNode);
 
-    makeSliders(device);
-    // Remove or comment out makeOffsetSlider(device); if it exists
+    setupNerdShitToggle(device);
     setupOffsetControl(device); // Add this line
     setupOddsTRIGControl(device); // Add this line
     attachOutports(device);
@@ -277,6 +276,36 @@ function setupOddsTRIGControl(device) {
 }
 
 
+function setupNerdShitToggle(device) {
+    const nerdButton = document.getElementById("nerd-shit-button");
+    const slidersContainer = document.getElementById("rnbo-parameter-sliders");
+
+    // Initially hide the parameter sliders and remove their content
+    slidersContainer.style.display = 'none';
+    slidersContainer.innerHTML = ''; // Clear content
+
+    let slidersCreated = false; // Flag to track if sliders are created
+
+    nerdButton.addEventListener("click", function() {
+        if (slidersContainer.style.display === 'none') {
+            slidersContainer.style.display = 'block'; // Show the sliders
+            nerdButton.textContent = 'Nerd Shit ↓';  // Change arrow to point down
+
+            // Create sliders if they haven't been created yet
+            if (!slidersCreated) {
+                makeSliders(device);
+                slidersCreated = true; // Update flag
+            }
+        } else {
+            slidersContainer.style.display = 'none';  // Hide the sliders
+            nerdButton.textContent = 'Nerd Shit →';  // Change arrow to point to the right
+
+            // Remove the sliders if they were created
+            slidersContainer.innerHTML = ''; // Clear content
+            slidersCreated = false; // Reset flag
+        }
+    });
+}
 
 function createSliderUI(param) {
     let label = document.createElement("label");
@@ -392,19 +421,34 @@ function setupGridControl(device) {
         }, 1000);
     }
 
+    // Setup the glitch button
     document.getElementById("glitch-button").addEventListener("click", function() {
-        const glitchParam = device.parameters.find(param => param.id.includes("glitch")); // Adjust to match your parameter's ID
+        const glitchParam = device.parameters.find(param => param.id.includes("glitch"));
         if (glitchParam) {
             if (glitchParam.value === 0) {
                 glitchParam.value = 127; // Engage the glitch
-                this.style.backgroundColor = '#C0C0C0'; // Change to silver
+                this.classList.add('engaged'); // Add engaged state
             } else {
                 glitchParam.value = 0; // Turn off the glitch
-                this.style.backgroundColor = '#808080'; // Change back to grey
+                this.classList.remove('engaged'); // Remove engaged state
             }
         }
     });
-    
+
+    // Clear Button Functionality
+    document.getElementById("clear-button").addEventListener("click", function() {
+        const clearParam = device.parameters.find(param => param.id.includes("CLEAR")); // Adjust to match your parameter's ID
+        if (clearParam) {
+            if (clearParam.value === 0) {
+                clearParam.value = 1; // Engage the clear parameter
+                this.classList.add('engaged'); // Add engaged state
+            } else {
+                clearParam.value = 0; // Turn off the clear parameter
+                this.classList.remove('engaged'); // Remove engaged state
+            }
+        }
+    });
+
 
     function updateCoordinates(event) {
         event.preventDefault();

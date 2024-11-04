@@ -15,7 +15,7 @@
 
     <h1 id="neptr-title">NEPTR</h1>
 
-    <p id="start-instruction">unsilence phone, click notes, drag finger around :0</p>
+    <!-- <p id="start-instruction">unsilence phone, click notes, drag finger around :0</p> -->
 
     <!-- Background SVG -->
     <svg id="background" width="100%" height="100%"></svg>
@@ -32,11 +32,6 @@
     <div id="rnbo-root">
         <div></div>
 
-        <!-- MIDI Note Buttons -->
-        <div id="rnbo-clickable-keyboard">
-            <h2>midi notes</h2>
-            <em id="no-midi-label">No MIDI input</em>
-        </div>
 
         <!-- Piano Keyboard Section -->
         <div id="piano-keyboard">
@@ -64,30 +59,42 @@
             </div>
         </div>
  
+      
         <div id="grid-wrapper">
-            <!-- Existing Offset Control -->
-            <div id="offset-control"></div>
+            <!-- Controls and Grid Container -->
+            <div class="controls-and-grid">
+                <!-- Offset Control (Left Slider) -->
+                <div id="offset-control"></div>
         
-            <!-- New OddsTRIG Control -->
-            <div id="oddsTRIG-control"></div>
+                <!-- X/Y Grid -->
+                <div id="grid-container">
+                    <!-- Your existing grid content -->
+                </div>
         
-            <!-- X/Y Grid -->
-            <div id="grid-container">
-                <!-- Your existing grid content -->
+                <!-- OddsTRIG Control (Right Slider) -->
+                <div id="oddsTRIG-control"></div>
             </div>
         
             <!-- Glitch Button -->
-            <button id="glitch-button"></button>
-        </div>
-            
+            <button id="glitch-button" class="control-button"></button> <!-- Removed text from the button -->
         
-
-        <!-- RNBO Parameter Sliders -->
-        <div id="rnbo-parameter-sliders">
-            <h2>nerd shit</h2>
-            <em id="no-param-label">No parameters</em>
+            <!-- Clear Button -->
+            <button id="clear-button" class="control-button"></button> <!-- New button for clear parameter -->
+        
+            <!-- Piano Keyboard Section -->
+            <div id="rnbo-clickable-keyboard">
+                <!-- Your keyboard content here -->
+            </div>
         </div>
-    </div>
+                
+        
+        <button id="nerd-shit-button" class="nerd-shit-button">nerd shit →</button> <!-- Initially points to the right -->
+
+        <!-- RNBO Parameter Sliders Container -->
+        <div id="rnbo-parameter-sliders">
+            <!-- Existing RNBO parameter sliders here -->
+        </div>
+        
 
     <!-- External JavaScript for application functionality -->
     <script type="text/javascript" src="js/guardrails.js"></script>
