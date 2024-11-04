@@ -66,7 +66,8 @@ async function setup() {
     device.node.connect(outputNode);
 
     makeSliders(device);
-    makeOffsetSlider(device); // Add this line
+    // Remove or comment out makeOffsetSlider(device); if it exists
+    setupOffsetControl(device); // Add this line
     attachOutports(device);
     loadPresets(device, patcher);
     makeMIDIKeyboard(device);
@@ -130,58 +131,76 @@ function makeSliders(device) {
     });
 }
 
-// Function to create a slider for the offset parameter
-function makeOffsetSlider(device) {
-    const pdiv = document.getElementById("offset-slider-container");
 
-    // Clear any existing slider elements
-    pdiv.innerHTML = ""; // Remove any previous slider to avoid duplicates
+function setupOffsetControl(device) {
+    const offsetControl = document.getElementById('offset-control');
 
-    // Log available parameters to debug
-    console.log("Available Parameters:", device.parameters.map(p => p.name));
+    // Define the range
+    const minOffset = -12;
+    const maxOffset = 12;
 
-    // Find the offset parameter
-    const offsetParam = device.parameters.find(param => param.name === "offset"); // Adjust if the name is different
+    // Variable to hold the last known circle position
+    let lastCirclePosition = '0%';
 
-    if (!offsetParam) {
-        console.error("Offset parameter not found");
-        return; // Exit if the parameter is not found
+    // Function to update the offset and gradient
+    function updateOffset(event) {
+        event.preventDefault();
+
+        let clientY;
+        if (event.touches && event.touches.length > 0) {
+            clientY = event.touches[0].clientY;
+        } else {
+            clientY = event.clientY;
+        }
+
+        const rect = offsetControl.getBoundingClientRect();
+        let y = clientY - rect.top;
+        y = Math.max(0, Math.min(y, rect.height)); // Clamp y to [0, height]
+
+        // Map y to offset value (invert mapping so +12 is at the top)
+        const offsetValue = maxOffset - ((y / rect.height) * (maxOffset - minOffset));
+
+        // Update the offset parameter
+        const offsetParam = device.parameters.find(param => param.name === "offset");
+        if (offsetParam) {
+            offsetParam.value = offsetValue; // Set the offset parameter to the calculated value
+        }
+
+        // Update the gradient circle position
+        const percentage = (y / rect.height) * 100;
+        offsetControl.style.setProperty('--circle-position', `${percentage}%`);
+        lastCirclePosition = `${percentage}%`; // Store the last known position
     }
 
-    // Create the slider element
-    const slider = document.createElement("input");
-    slider.type = "range";
-    slider.min = offsetParam.min;
-    slider.max = offsetParam.max;
-    slider.step = offsetParam.steps > 1 ? (offsetParam.max - offsetParam.min) / (offsetParam.steps - 1) : (offsetParam.max - offsetParam.min) / 1000;
-    slider.value = offsetParam.value;
-    slider.className = "parameter-slider offset-slider"; // Add a class for styling
-
-    // Update the background gradient based on slider value
-    const updateSliderGradient = () => {
-        const percentage = (slider.value - slider.min) / (slider.max - slider.min) * 100;
-        slider.style.setProperty('--thumb-position', `${percentage}%`); // Set CSS variable for gradient
-        offsetParam.value = parseFloat(slider.value);
-    };
-
-    // Event listener for slider input
-    slider.addEventListener("input", updateSliderGradient);
-
-    // Append the slider to the container
-    pdiv.appendChild(slider);
-
-    // Set the initial value of the slider based on the parameter value
-    updateSliderGradient(); // Initialize the gradient
-
-    // Subscribe to parameter changes
-    if (offsetParam.updateEvent) {
-        offsetParam.updateEvent.subscribe((param) => {
-            slider.value = param.value;
-            updateSliderGradient(); // Update the gradient when the parameter changes
-        });
-    } else {
-        console.error("No update event found for the offset parameter.");
+    // Function to show the gradient circle
+    function showGradient() {
+        offsetControl.classList.add('active');
     }
+
+    // Function to hide the gradient circle but keep it in the last position
+    function hideGradient() {
+        offsetControl.classList.remove('active');
+        offsetControl.style.setProperty('--circle-position', lastCirclePosition); // Retain last position
+    }
+
+    // Event listeners
+    offsetControl.addEventListener('mousemove', (event) => {
+        updateOffset(event);
+        showGradient();
+    });
+
+    offsetControl.addEventListener('touchmove', (event) => {
+        updateOffset(event);
+        showGradient();
+    });
+
+    offsetControl.addEventListener('mouseleave', hideGradient); // Keep last position
+    offsetControl.addEventListener('touchend', hideGradient); // Keep last position
+
+    // Prevent default touch actions to avoid scrolling
+    offsetControl.addEventListener('touchstart', (event) => {
+        event.preventDefault();
+    });
 }
 
 

@@ -1,32 +1,63 @@
-
-
-/* Grid-specific styles */
-#grid-container {
-    width: 36vw; /* Width remains responsive based on viewport */
-    height: auto; /* Height will adjust based on aspect ratio */
-    aspect-ratio: 1; /* Keep it square (1:1 ratio) */
-    max-width: 270px; /* Maximum width limit */
-    max-height: 500px; /* Maximum height limit */
-    background-color: #4d004d; /* Keep the original background color */
-    position: relative;
-    margin: 5vh auto; /* Center the grid with some margin at the top and bottom */
-    border: 0.5px solid; /* Thin border */
-    animation: rainbow-border 1s infinite linear; /* Apply the rainbow animation */
-    overflow: hidden;
-    touch-action: none; /* Prevent scrolling interference */
-    box-sizing: border-box; /* Include the border in sizing */
-    /* Animated rainbow border */
-    border-image: conic-gradient(
-        from 0deg,
-        hsl(0, 100%, 50%),
-        hsl(32, 100%, 50%),
-        hsl(51, 100%, 50%),
-        hsl(68, 100%, 51%),
-        hsl(124, 100%, 50%),
-        hsl(194, 100%, 50%),
-        hsl(238, 100%, 50%)
-    ) 1;
+/* Grid Wrapper */
+#grid-wrapper {
+    width: clamp(200px, 40vw, 400px); /* Responsive width */
+    aspect-ratio: 1; /* Keep the grid square */
+    position: relative; /* For absolute positioning of child elements */
+    margin: 5vh auto; /* Center horizontally */
 }
+
+/* Grid Container */
+#grid-container {
+    width: 100%; /* Full width of the wrapper */
+    height: 100%; /* Full height of the wrapper */
+    background-color: #4d004d; /* Original background color */
+    position: relative; /* Position for animations, etc. */
+}
+
+/* Offset Control */
+#offset-control {
+    width: 25px; /* Fixed width */
+    height: calc(100% - 20px); /* Responsive height */
+    background-color: #1A5D9B; /* Darker blue color */
+    position: absolute; /* Positioned relative to the grid */
+    left: calc(-1 * (25px + 10px)); /* Adjust to prevent sticking to the right */
+    top: 10px; /* Adjust top position */
+    border: 2px solid #ffffff; /* White outline */
+    border-radius: 5px; /* Rounded edges */
+    overflow: hidden; /* Hide overflow */
+    touch-action: none; /* Prevent default touch actions */
+}
+
+/* Gradient Circle Effect */
+#offset-control::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: var(--circle-position, 0%);
+    transform: translate(-50%, -50%);
+    width: clamp(15px, 30%, 30px); /* Responsive size */
+    height: clamp(15px, 30%, 30px); /* Responsive size */
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.7) 0%, transparent 70%);
+    pointer-events: none; /* Allow mouse events to pass through */
+}
+
+/* Glitch Button */
+#glitch-button {
+    position: absolute;
+    bottom: 100%; /* Position above the grid */
+    right: 0; /* Align right edges */
+    margin-bottom: 10px; /* Space between the button and grid */
+    width: clamp(60px, 15%, 80px); /* Responsive width */
+    height: clamp(30px, 5%, 50px); /* Responsive height */
+    background-color: grey; /* Button color */
+    color: white; /* Text color */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded edges */
+    cursor: pointer; /* Pointer on hover */
+}
+
+
+
 
 /* Styles for the glitch button */
 #button-container {
@@ -34,79 +65,6 @@
     margin-bottom: 5px; /* Space between the button and the grid */
     position: relative; /* Position relative to allow absolute positioning inside */
 }
-
-#glitch-button {
-    background-color: #808080; /* Grey color */
-    color: #ffffff; /* Text color */
-    border: none; /* No border */
-    border-radius: 4px; /* Slightly rounded corners for a rectangular look */
-    width: 40px; /* Set the new width */
-    height: 23px; /* Set the new height, rounded from 33.33px */
-    font-size: 0.8em; /* Slightly smaller font size */
-    cursor: pointer; /* Pointer cursor on hover */
-    transition: background-color 0.3s; /* Smooth transition for hover effect */
-    position: absolute; /* Absolute positioning for the button */
-    bottom: 100%; /* Position it above the grid */
-    right: 0; /* Align it to the right of the button container */
-    margin-right: 60px; /* Optional: Adjust the spacing to the right */
-    z-index: 1; /* Ensure the button is above other elements */
-}
-
-
-/* Styles for the offset slider container */
-#offset-slider-container {
-    width: 36vw; /* Match the width of the grid */
-    max-width: 270px; /* Match max-width to prevent overflow */
-    margin: 10px auto; /* Center the slider below the grid */
-    position: relative; /* Positioning for the thumb */
-}
-
-/* Slider track styling */
-.parameter-slider {
-    -webkit-appearance: none; /* Remove default styling */
-    width: 100%; /* Full width */
-    height: 20px; /* Height of the track */
-    background-color: #2E2E2E; /* Darker overall color */
-    border-radius: 0; /* Remove rounded edges for hard edges */
-    outline: none; /* Remove outline on focus */
-    touch-action: none; /* Prevent scrolling on touch devices */
-}
-
-/* Notch style for the slider thumb */
-.parameter-slider::-webkit-slider-thumb {
-    -webkit-appearance: none; /* Remove default styling */
-    appearance: none; /* Remove default styling */
-    width: 8px; /* Width of the notch */
-    height: 20px; /* Height of the notch */
-    background: #ffffff; /* White notch */
-    border-radius: 0; /* Hard edges for the notch */
-    cursor: pointer; /* Pointer cursor on hover */
-    margin-top: -2px; /* Center the notch vertically on the track */
-}
-
-/* Notch style for the thumb in Firefox */
-.parameter-slider::-moz-range-thumb {
-    width: 8px; /* Width of the notch */
-    height: 20px; /* Height of the notch */
-    background: #ffffff; /* White notch */
-    border-radius: 0; /* Hard edges for the notch */
-    cursor: pointer; /* Pointer cursor on hover */
-}
-
-/* Track styling for the mouse tracking effect */
-.parameter-slider:focus,
-.parameter-slider:hover {
-    background: #2E2E2E; /* Ensure the overall dark color persists */
-}
-
-/* Brighter gradient effect on the track where the thumb is */
-.parameter-slider:active {
-    background: linear-gradient(to right, #007BFF 0%, #007BFF var(--thumb-position), #2E2E2E var(--thumb-position), #2E2E2E 100%);
-}
-
-/* Additional JavaScript to update the thumb position for the gradient */
-
-
 
 
 /* Animating the rainbow border */
