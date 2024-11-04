@@ -48,7 +48,7 @@
     position: absolute; /* Absolute positioning for the button */
     bottom: 100%; /* Position it above the grid */
     right: 0; /* Align it to the right of the button container */
-    margin-right: 100px; /* Optional: Adjust the spacing to the right */
+    margin-right: 60px; /* Optional: Adjust the spacing to the right */
     z-index: 1; /* Ensure the button is above other elements */
 }
 
