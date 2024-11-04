@@ -3,7 +3,7 @@
     position: relative;
     width: 75%;           /* Similar to the piano keyboard width */
     max-width: 400px;     /* Limit the maximum width */
-    height: 35vh;         /* Set the height to 35vh */
+    height: 36vh;         /* Set the height to 35vh */
     margin: 0 auto;       /* Center the grid wrapper */
     display: flex;
     flex-direction: column;
@@ -22,7 +22,7 @@
 /* Offset Control (Left Slider) */
 #offset-control {
     width: 25px;             /* Fixed width */
-    height: 35vh;            /* Match the reduced height */
+    height: 33vh;            /* Match the reduced height */
     background-color: #8d8302;
     border: 2px solid #ffea00;
     border-radius: 5px;
@@ -33,8 +33,8 @@
 
 /* Grid Container (X/Y Grid) */
 #grid-container {
-    width: 75vw;            /* Fixed width */
-    height: 35vh;            /* Match the reduced height */
+    width: 70vw;            /* Fixed width */
+    height: 31vh;            /* Match the reduced height */
     background-color: #4d004d;
     position: relative;
     display: flex;
@@ -50,7 +50,7 @@
 /* OddsTRIG Control (Right Slider) */
 #oddsTRIG-control {
     width: 25px;             /* Fixed width */
-    height: 35vh;            /* Match the reduced height */
+    height: 33vh;            /* Match the reduced height */
     background-color: #1b652f;
     border: 2px solid #68fc68;
     border-radius: 5px;
@@ -340,7 +340,6 @@ input[type="range"] {
     align-items: center;
     justify-content: center;
     font-family: 'Courier New', Courier, monospace;
-    padding-bottom: 2vh; /* Balanced padding to match top spacing with the X/Y grid */
 }
 
 /* Arrow Indicator for Nerd Shit Button */
