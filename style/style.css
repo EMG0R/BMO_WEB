@@ -3,12 +3,12 @@
     position: relative;
     width: 75%;           /* Similar to the piano keyboard width */
     max-width: 400px;     /* Limit the maximum width */
-    height: 36vh;         /* Set the height to 35vh */
+    height: 58vh;         /* Set the height to 35vh */
     margin: 0 auto;       /* Center the grid wrapper */
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 5vh;   /* Space between the grid and elements below it */
+    margin-bottom: 4vh;   /* Space between the grid and elements below it */
 }
 
 /* Controls and Grid Container */
@@ -22,7 +22,7 @@
 /* Offset Control (Left Slider) */
 #offset-control {
     width: 25px;             /* Fixed width */
-    height: 33vh;            /* Match the reduced height */
+    height: 58vh;            /* Match the reduced height */
     background-color: #8d8302;
     border: 2px solid #ffea00;
     border-radius: 5px;
@@ -34,13 +34,13 @@
 /* Grid Container (X/Y Grid) */
 #grid-container {
     width: 70vw;            /* Fixed width */
-    height: 31vh;            /* Match the reduced height */
+    height: 58vh;            /* Match the reduced height */
     background-color: #4d004d;
     position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 0.5px solid;
+    border: 2px solid;
     animation: rainbow-border 1s infinite linear;
     overflow: hidden;
     touch-action: none;
@@ -50,7 +50,7 @@
 /* OddsTRIG Control (Right Slider) */
 #oddsTRIG-control {
     width: 25px;             /* Fixed width */
-    height: 33vh;            /* Match the reduced height */
+    height: 58vh;            /* Match the reduced height */
     background-color: #1b652f;
     border: 2px solid #68fc68;
     border-radius: 5px;
@@ -239,13 +239,13 @@ h2, em {
     width: 100%;
     font-family: 'Courier New', Courier, monospace;
     color: #ffffff;
-    padding-bottom: 10px;
+    padding-bottom: 2px;
 }
 
 #rnbo-root {
     margin: auto;
     max-width: 540px;
-    padding: 20px;
+    padding: 0px;
 }
 
 #neptr-title {
@@ -254,11 +254,11 @@ h2, em {
     align-items: center;
     color: #ffffff;
     font-family: 'Courier New', Courier, monospace;
-    margin-top: 0;
-    margin-bottom: 10px;
+    margin-top: 10;
+    margin-bottom: 0.1vh;
     font-size: 2em;
     letter-spacing: 2px;
-    height: 100px;
+    height: 50px;
 }
 
 #start-instruction {
@@ -279,7 +279,7 @@ h2, em {
     flex-direction: column;
     margin-top: 20px;
     padding: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 #rnbo-parameter-sliders > div {
@@ -320,27 +320,96 @@ input[type="range"] {
 
 /* Preset Section */
 #rnbo-presets {
-    width: 75%;
-    max-width: 400px; /* Same maximum width as other elements */
-    margin: 0 auto; /* Remove bottom margin to minimize gap */
-    text-align: center; /* Align text content to the center */
-    padding: 1vh 0; /* Padding to give a bit of space around the content */
-    box-sizing: border-box; /* Include padding and border in the width */
+    width: 25%; /* Reduced width to make the box smaller */
+    max-width: 200px; /* Limit the maximum width */
+    margin: 0 auto; /* Center the preset dropdown */
+    padding: 0.5vh 0; /* Smaller padding to reduce the size */
+    text-align: center; /* Center text content */
+    box-sizing: border-box; /* Include padding and border in width calculation */
+    border: 2px solid white; /* Thicker border to match nerd shit box */
+    font-family: 'Courier New', Courier, monospace; /* Consistent font */
+    border-radius: 5px; /* Slightly rounded edges */
+    margin-right: 10px; /* Add margin-right to align with nerd shit box */
 }
+
+/* Nerd Shit Container */
+#nerd-shit-container {
+    width: 25%; /* Match the size of preset box */
+    max-width: 200px; /* Limit the maximum width */
+    margin: 0 auto; /* Center the nerd shit container */
+    padding: 0.5vh 0; /* Smaller padding to reduce the size */
+    text-align: center;
+    box-sizing: border-box;
+    border: 2px solid white; /* Thicker border to match preset box */
+    font-family: 'Courier New', Courier, monospace; /* Consistent font */
+    border-radius: 5px; /* Slightly rounded edges */
+    margin-left: 10px; /* Add margin-left to align with preset box */
+}
+
+/* Make preset and nerd shit boxes display inline to align horizontally */
+#rnbo-presets,
+#nerd-shit-container {
+    display: inline-block;
+    vertical-align: top; /* Align them properly when side by side */
+}
+
 
 /* Nerd Shit Toggle Button */
 #nerd-shit-toggle {
     background: none;          /* No background color */
     color: white;              /* White text */
-    border: 2px solid white;   /* White outline */
-    padding: 0.5em 1em;        /* Padding */
-    border-radius: 5px;        /* Rounded edges */
+    border: none;              /* No border */
     cursor: pointer;           /* Pointer cursor */
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: inherit;      /* Inherit font from parent */
+    font-size: 1rem;
 }
+
+/* Arrow Indicator for Nerd Shit Button */
+#toggle-arrow {
+    width: 0;
+    height: 0;
+    margin-right: 0.5em;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-bottom: 15px solid white;  /* Default arrow pointing down */
+    transform: skewX(-15deg);         /* Geometric skew for a unique triangle look */
+    transition: transform 0.3s ease;
+}
+
+#nerd-shit-toggle.open #toggle-arrow {
+    transform: skewX(-15deg) rotate(180deg);  /* Rotate the arrow upwards when open */
+}
+
+/* Adjust the select element in the preset box */
+#preset-select {
+    width: 80%;                   /* Adjust width as needed */
+    padding: 0.5em;
+    border-radius: 5px;
+    border: 1px solid white;
+    background-color: #001f3f;
+    color: white;
+    font-family: inherit;
+}
+
+/* Remove any extra padding or margin inside the select */
+#preset-select option {
+    padding: 0.5em;
+}
+
+/* Ensure the parameter sliders container is styled properly */
+#rnbo-parameter-sliders {
+    width: 100%;
+    margin-top: 1vh;
+}
+
+/* Adjust the parameter sliders styling if needed */
+#rnbo-parameter-sliders > div {
+    /* Your existing styles for sliders */
+}
+
 
 /* Arrow Indicator for Nerd Shit Button */
 #toggle-arrow {
